@@ -18,6 +18,7 @@
     <Folder Include="Properties\Models\" />
     <Folder Include="Services\" />
     <Folder Include="wwwroot\data\" />
+    <Folder Remove="src-tauri\"/>
   </ItemGroup>
 
 </Project>
