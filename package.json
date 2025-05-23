@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "dev": "dotnet watch run",
+    "build": "dotnet publish -c release -o dist",
+    "bin-dev": "npx tauri dev",
+    "bin-build": "npx tauri build",
+    "watch": "npx tailwindcss -i ./wwwroot/css/app.css -o ./wwwroot/css/app.min.css --watch"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.5.0"
+  },
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.7",
+    "tailwindcss": "^4.1.7"
+  }
+}
