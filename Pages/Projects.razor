@@ -1,0 +1,248 @@
+@page "/projects"
+@inject IProjectService ProjectService
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+
+<PageTitle>项目总览 - SynBlazor</PageTitle>
+
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">项目总览</h1>
+                <p class="text-gray-600 dark:text-gray-300 mt-2">管理您的PDF转PPT项目</p>
+            </div>
+            <FluentButton Appearance="Appearance.Accent" @onclick="NavigateToHome"
+                IconStart="@(new Icons.Regular.Size20.Add())">
+                创建新项目
+            </FluentButton>
+        </div>
+
+        <!-- Loading State -->
+        @if (isLoading)
+        {
+            <div class="flex justify-center items-center py-12">
+                <FluentProgressRing />
+                <span class="ml-3 text-gray-600 dark:text-gray-300">加载项目中...</span>
+            </div>
+        }
+        else if (projects?.Any() == true)
+        {
+            <!-- Projects Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @foreach (var project in projects)
+                {
+                    <FluentCard class="hover:shadow-lg transition-all duration-300 cursor-pointer"
+                        @onclick="() => NavigateToProject(project.Id)">
+                        <div class="p-6">
+                            <!-- Status Badge -->                            <div class="flex justify-between items-start mb-4">
+                                <FluentBadge Appearance="@GetStatusAppearance(project.Status)" class="text-xs">
+                                    @GetStatusText(project.Status)
+                                </FluentBadge>                                <FluentButton Size="ButtonSize.Small" Appearance="Appearance.Stealth"
+                                    IconStart="@(new Icons.Regular.Size16.MoreHorizontal())"
+                                    @onclick="@(() => NavigateToProject(project.Id))" />
+                            </div>
+
+                            <!-- Project Info -->
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2">
+                                @project.Title
+                            </h3>
+
+                            @if (!string.IsNullOrEmpty(project.Description))
+                            {
+                                <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3">
+                                    @project.Description
+                                </p>
+                            }
+
+                            <!-- Progress Bar -->
+                            @if (project.Status != ProjectStatus.Created && project.Status != ProjectStatus.Failed)
+                            {
+                                <div class="mb-4">
+                                    <div class="flex justify-between text-xs text-gray-600 dark:text-gray-400 mb-1">
+                                        <span>处理进度</span>
+                                        <span>@project.Progress.TotalProgress%</span>
+                                    </div>
+                                    <FluentProgress Value="@project.Progress.TotalProgress" Max="100" />
+                                </div>
+                            }
+
+                            <!-- Timestamps -->
+                            <div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
+                                <span>创建于 @project.CreatedAt.ToString("yyyy-MM-dd")</span>
+                                @if (project.UpdatedAt.HasValue)
+                                {
+                                    <span>更新于 @project.UpdatedAt.Value.ToString("MM-dd HH:mm")</span>
+                                }
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="mt-4 flex gap-2">
+                                @if (project.Status == ProjectStatus.Completed && !string.IsNullOrEmpty(project.PptxFileName))                                {
+                                    <FluentButton Size="ButtonSize.Small" Appearance="Appearance.Accent"
+                                        @onclick="@(() => DownloadPptx(project.Id))"
+                                        IconStart="@(new Icons.Regular.Size16.ArrowDownload())">
+                                        下载PPT
+                                    </FluentButton>
+                                }
+                                else if (project.Status == ProjectStatus.PdfUploaded)                                {
+                                    <FluentButton Size="ButtonSize.Small" Appearance="Appearance.Accent"
+                                        @onclick="@(() => StartProcessing(project.Id))"
+                                        IconStart="@(new Icons.Regular.Size16.Play())">
+                                        开始处理
+                                    </FluentButton>
+                                }
+                            </div>
+                        </div>
+                    </FluentCard>
+                }
+            </div>
+        }
+        else
+        {
+            <!-- Empty State -->
+            <div class="text-center py-16">
+                <FluentIcon Value="@(new Icons.Regular.Size48.Folder())" Color="Color.Neutral"
+                    class="mb-4 opacity-50" />
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                    还没有项目
+                </h3>
+                <p class="text-gray-600 dark:text-gray-300 mb-6">
+                    创建您的第一个PDF转PPT项目
+                </p>
+                <FluentButton Appearance="Appearance.Accent" @onclick="NavigateToHome"
+                    IconStart="@(new Icons.Regular.Size20.Add())">
+                    创建新项目
+                </FluentButton>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private List<Project>? projects;
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProjects();
+    }
+
+    private async Task LoadProjects()
+    {
+        isLoading = true;
+        try
+        {
+            projects = await ProjectService.GetAllProjectsAsync();
+        }
+        catch (Exception ex)
+        {
+            // TODO: 显示错误消息
+            await JSRuntime.InvokeVoidAsync("console.error", "加载项目失败:", ex.Message);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void NavigateToProject(int projectId)
+    {
+        Navigation.NavigateTo($"/project/{projectId}");
+    }
+
+    private void NavigateToHome()
+    {
+        Navigation.NavigateTo("/");
+    }
+
+    private async Task DownloadPptx(int projectId)
+    {
+        try
+        {
+            // TODO: 实现文件下载逻辑
+            var fileData = await ProjectService.DownloadPptxAsync(projectId);
+            if (fileData != null)
+            {
+                // TODO: 触发浏览器下载
+                await JSRuntime.InvokeVoidAsync("alert", "下载功能待实现");
+            }
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", $"下载失败: {ex.Message}");
+        }
+    }
+
+    private async Task StartProcessing(int projectId)
+    {
+        try
+        {
+            // TODO: 实现开始处理逻辑
+            await ProjectService.StartProcessingAsync(projectId);
+            await LoadProjects(); // 刷新列表
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", $"启动处理失败: {ex.Message}");
+        }
+    }
+
+    private Appearance GetStatusAppearance(ProjectStatus status)
+    {
+        return status switch
+        {
+            ProjectStatus.Created => Appearance.Neutral,
+            ProjectStatus.PdfUploaded => Appearance.Accent,
+            ProjectStatus.Analyzing or
+            ProjectStatus.ProcessingContent or
+            ProjectStatus.GeneratingSlidev or
+            ProjectStatus.ConvertingToPptx => Appearance.Accent,
+            ProjectStatus.Completed => Appearance.Accent,
+            ProjectStatus.Failed => Appearance.Stealth,
+            _ => Appearance.Neutral
+        };
+    }
+
+    private string GetStatusText(ProjectStatus status)
+    {
+        return status switch
+        {
+            ProjectStatus.Created => "已创建",
+            ProjectStatus.PdfUploaded => "已上传",
+            ProjectStatus.Analyzing => "分析中",
+            ProjectStatus.ProcessingContent => "处理中",
+            ProjectStatus.GeneratingSlidev => "生成中",
+            ProjectStatus.ConvertingToPptx => "转换中",
+            ProjectStatus.Completed => "已完成",
+            ProjectStatus.Failed => "处理失败",
+            _ => "未知状态"
+        };
+    }
+
+    private List<MenuButtonItem> GetProjectMenuItems(Project project)
+    {
+        return new List<MenuButtonItem>
+{
+new() { Text = "查看详情", OnClick = () => NavigateToProject(project.Id) },            new() { Text = "删除项目", OnClick = async () => await DeleteProject(project.Id) }
+};
+    }
+
+    private async Task DeleteProject(int projectId)
+    {
+        var confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "确定要删除这个项目吗？");
+        if (confirmed)
+        {
+            try
+            {
+                await ProjectService.DeleteProjectAsync(projectId);
+                await LoadProjects();
+            }
+            catch (Exception ex)
+            {
+                await JSRuntime.InvokeVoidAsync("alert", $"删除失败: {ex.Message}");
+            }
+        }
+    }
+}

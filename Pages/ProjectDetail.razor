@@ -1,0 +1,416 @@
+@page "/project/{ProjectId:int}"
+@inject IProjectService ProjectService
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+
+<PageTitle>项目详情 - SynBlazor</PageTitle>
+
+@if (project == null && !isLoading)
+{
+    <!-- Project Not Found -->
+    <div class="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div class="text-center">            <FluentIcon Value="@(new Icons.Regular.Size48.Document())"
+                       Color="Color.Neutral" class="mb-4 opacity-50" />
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">项目未找到</h2>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">请检查项目ID是否正确</p>
+            <FluentButton Appearance="Appearance.Accent" @onclick="NavigateToProjects">
+                返回项目列表
+            </FluentButton>
+        </div>
+    </div>
+}
+else if (isLoading)
+{
+    <!-- Loading -->
+    <div class="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <FluentProgressRing />
+        <span class="ml-3 text-gray-600 dark:text-gray-300">加载项目中...</span>
+    </div>
+}
+else
+{
+    <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div class="container mx-auto px-4 py-8">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-4">
+                    <FluentButton Appearance="Appearance.Stealth"
+                                 IconStart="@(new Icons.Regular.Size20.ArrowLeft())"
+                                 @onclick="NavigateToProjects">
+                        返回
+                    </FluentButton>
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">@project!.Title</h1>
+                        <div class="flex items-center gap-4 mt-2">
+                            <FluentBadge Appearance="@GetStatusAppearance(project.Status)">
+                                @GetStatusText(project.Status)
+                            </FluentBadge>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">
+                                创建于 @project.CreatedAt.ToString("yyyy年MM月dd日")
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-2">
+                    @if (project.Status == ProjectStatus.Completed && !string.IsNullOrEmpty(project.PptxFileName))
+                    {                        <FluentButton Appearance="Appearance.Accent"
+                                     IconStart="@(new Icons.Regular.Size20.ArrowDownload())"
+                                     @onclick="DownloadPptx">
+                            下载PPT
+                        </FluentButton>
+                    }
+                    else if (project.Status == ProjectStatus.PdfUploaded)
+                    {
+                        <FluentButton Appearance="Appearance.Accent"
+                                     IconStart="@(new Icons.Regular.Size20.Play())"
+                                     @onclick="StartProcessing">
+                            开始处理
+                        </FluentButton>
+                    }
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Main Content -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Project Description -->
+                    @if (!string.IsNullOrEmpty(project.Description))
+                    {
+                        <FluentCard>
+                            <div class="p-6">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">项目描述</h3>
+                                <p class="text-gray-600 dark:text-gray-300 leading-relaxed">@project.Description</p>
+                            </div>
+                        </FluentCard>
+                    }
+
+                    <!-- File Upload Section -->
+                    @if (project.Status == ProjectStatus.Created)
+                    {
+                        <FluentCard>
+                            <div class="p-6">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">上传PDF文件</h3>
+
+                                <FluentInputFile @ref="fileInput"
+                                               DragDropZoneVisible="true"
+                                               Mode="InputFileMode.Stream"
+                                               Multiple="false"
+                                               Accept=".pdf"
+                                               MaximumFileSize="@(50 * 1024 * 1024)"
+                                               OnCompleted="@OnFileUploaded"
+                                               Class="mb-4">
+                                    <label>
+                                        <FluentIcon Value="@(new Icons.Regular.Size24.DocumentPdf())" />
+                                        <div>
+                                            <strong>点击选择PDF文件</strong> 或拖拽文件到此处
+                                        </div>
+                                        <div>支持最大50MB的PDF文件</div>
+                                    </label>
+                                </FluentInputFile>
+
+                                @if (isUploading)
+                                {
+                                    <div class="flex items-center gap-2 text-blue-600">
+                                        <FluentProgressRing Style="width: 20px; height: 20px;" />
+                                        <span>上传中...</span>
+                                    </div>
+                                }
+                            </div>
+                        </FluentCard>
+                    }
+                    else if (!string.IsNullOrEmpty(project.PdfFileName))
+                    {
+                        <!-- PDF Info -->
+                        <FluentCard>
+                            <div class="p-6">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">PDF文件信息</h3>
+                                <div class="flex items-center gap-3">
+                                    <FluentIcon Value="@(new Icons.Regular.Size20.DocumentPdf())" Color="Color.Accent" />
+                                    <span class="text-gray-700 dark:text-gray-300">@project.PdfFileName</span>
+                                </div>
+                            </div>
+                        </FluentCard>
+                    }
+
+                    <!-- Processing Progress -->
+                    @if (project.Status != ProjectStatus.Created && project.Status != ProjectStatus.Failed)
+                    {
+                        <FluentCard>
+                            <div class="p-6">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">处理进度</h3>
+
+                                <div class="space-y-4">
+                                    <!-- PDF Analysis -->
+                                    <div>
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span class="text-gray-600 dark:text-gray-300">PDF分析</span>
+                                            <span class="text-gray-500">@project.Progress.PdfAnalysisProgress%</span>
+                                        </div>
+                                        <FluentProgress Value="@project.Progress.PdfAnalysisProgress" Max="100" />
+                                    </div>
+
+                                    <!-- Content Processing -->
+                                    <div>
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span class="text-gray-600 dark:text-gray-300">内容处理</span>
+                                            <span class="text-gray-500">@project.Progress.ContentProcessingProgress%</span>
+                                        </div>
+                                        <FluentProgress Value="@project.Progress.ContentProcessingProgress" Max="100" />
+                                    </div>
+
+                                    <!-- Slidev Generation -->
+                                    <div>
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span class="text-gray-600 dark:text-gray-300">幻灯片生成</span>
+                                            <span class="text-gray-500">@project.Progress.SlidevGenerationProgress%</span>
+                                        </div>
+                                        <FluentProgress Value="@project.Progress.SlidevGenerationProgress" Max="100" />
+                                    </div>
+
+                                    <!-- PPTX Conversion -->
+                                    <div>
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span class="text-gray-600 dark:text-gray-300">PPT转换</span>
+                                            <span class="text-gray-500">@project.Progress.PptxConversionProgress%</span>
+                                        </div>
+                                        <FluentProgress Value="@project.Progress.PptxConversionProgress" Max="100" />
+                                    </div>
+
+                                    <!-- Overall Progress -->
+                                    <div class="pt-2 border-t">
+                                        <div class="flex justify-between text-sm font-medium mb-1">
+                                            <span class="text-gray-900 dark:text-white">总体进度</span>
+                                            <span class="text-blue-600">@project.Progress.TotalProgress%</span>
+                                        </div>
+                                        <FluentProgress Value="@project.Progress.TotalProgress" Max="100" Color="Color.Accent" />
+                                    </div>
+                                </div>
+                            </div>
+                        </FluentCard>
+                    }
+
+                    <!-- Error Message -->
+                    @if (!string.IsNullOrEmpty(project.ErrorMessage))
+                    {
+                        <FluentCard>
+                            <div class="p-6 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500">
+                                <h3 class="text-lg font-semibold text-red-800 dark:text-red-200 mb-2">处理错误</h3>
+                                <p class="text-red-700 dark:text-red-300">@project.ErrorMessage</p>
+                            </div>
+                        </FluentCard>
+                    }
+                </div>
+
+                <!-- Sidebar -->
+                <div class="space-y-6">
+                    <!-- Project Timeline -->
+                    <FluentCard>
+                        <div class="p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">项目时间轴</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center gap-3">
+                                    <FluentIcon Value="@(new Icons.Regular.Size16.Circle())"
+                                               Color="Color.Accent" />
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900 dark:text-white">项目创建</div>
+                                        <div class="text-xs text-gray-500">@project.CreatedAt.ToString("yyyy-MM-dd HH:mm")</div>
+                                    </div>
+                                </div>
+
+                                @if (project.UpdatedAt.HasValue)
+                                {
+                                    <div class="flex items-center gap-3">
+                                        <FluentIcon Value="@(new Icons.Regular.Size16.Circle())"
+                                                   Color="Color.Success" />
+                                        <div>
+                                            <div class="text-sm font-medium text-gray-900 dark:text-white">最后更新</div>
+                                            <div class="text-xs text-gray-500">@project.UpdatedAt.Value.ToString("yyyy-MM-dd HH:mm")</div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </FluentCard>
+
+                    <!-- Quick Actions -->
+                    <FluentCard>
+                        <div class="p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">快速操作</h3>
+                            <div class="space-y-2">
+                                <FluentButton Appearance="Appearance.Outline"
+                                             Style="width: 100%"
+                                             IconStart="@(new Icons.Regular.Size16.Edit())">
+                                    编辑项目信息
+                                </FluentButton>
+                                <FluentButton Appearance="Appearance.Stealth"
+                                             Style="width: 100%"
+                                             IconStart="@(new Icons.Regular.Size16.Delete())"
+                                             @onclick="DeleteProject">
+                                    删除项目
+                                </FluentButton>
+                            </div>
+                        </div>
+                    </FluentCard>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public int ProjectId { get; set; }
+
+    private Project? project;
+    private bool isLoading = true;
+    private bool isUploading = false;
+    private FluentInputFile? fileInput;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProject();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (project?.Id != ProjectId)
+        {
+            await LoadProject();
+        }
+    }
+
+    private async Task LoadProject()
+    {
+        isLoading = true;
+        try
+        {
+            project = await ProjectService.GetProjectByIdAsync(ProjectId);
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("console.error", "加载项目失败:", ex.Message);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task OnFileUploaded(IEnumerable<FluentInputFileEventArgs> files)
+    {
+        var file = files.FirstOrDefault();
+        if (file == null || project == null) return;
+
+        isUploading = true;
+        try
+        {
+            // TODO: 实现文件上传逻辑
+            using var stream = file.Stream;
+            var buffer = new byte[stream.Length];
+            await stream.ReadAsync(buffer, 0, buffer.Length);            var updatedProject = await ProjectService.UploadPdfAsync(project!.Id, buffer, file.Name);
+            project = updatedProject;
+
+            await JSRuntime.InvokeVoidAsync("alert", "文件上传成功！");
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", $"文件上传失败: {ex.Message}");
+        }
+        finally
+        {
+            isUploading = false;
+        }
+    }
+
+    private async Task StartProcessing()
+    {
+        if (project == null) return;
+
+        try
+        {
+            // TODO: 实现开始处理逻辑
+            var updatedProject = await ProjectService.StartProcessingAsync(project.Id);
+            project = updatedProject;
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", $"启动处理失败: {ex.Message}");
+        }
+    }
+
+    private async Task DownloadPptx()
+    {
+        if (project == null) return;
+
+        try
+        {
+            // TODO: 实现文件下载逻辑
+            var fileData = await ProjectService.DownloadPptxAsync(project.Id);
+            if (fileData != null)
+            {
+                await JSRuntime.InvokeVoidAsync("alert", "下载功能待实现");
+            }
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", $"下载失败: {ex.Message}");
+        }
+    }
+
+    private async Task DeleteProject()
+    {
+        if (project == null) return;
+
+        var confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "确定要删除这个项目吗？此操作无法撤销。");
+        if (confirmed)
+        {
+            try
+            {
+                await ProjectService.DeleteProjectAsync(project.Id);
+                Navigation.NavigateTo("/projects");
+            }
+            catch (Exception ex)
+            {
+                await JSRuntime.InvokeVoidAsync("alert", $"删除失败: {ex.Message}");
+            }
+        }
+    }
+
+    private void NavigateToProjects()
+    {
+        Navigation.NavigateTo("/projects");
+    }
+
+    private Appearance GetStatusAppearance(ProjectStatus status)
+    {
+        return status switch
+        {
+            ProjectStatus.Created => Appearance.Neutral,
+            ProjectStatus.PdfUploaded => Appearance.Accent,
+            ProjectStatus.Analyzing or
+            ProjectStatus.ProcessingContent or
+            ProjectStatus.GeneratingSlidev or
+            ProjectStatus.ConvertingToPptx => Appearance.Accent,
+            ProjectStatus.Completed => Appearance.Accent,
+            ProjectStatus.Failed => Appearance.Stealth,
+            _ => Appearance.Neutral
+        };
+    }
+
+    private string GetStatusText(ProjectStatus status)
+    {
+        return status switch
+        {
+            ProjectStatus.Created => "等待上传",
+            ProjectStatus.PdfUploaded => "等待处理",
+            ProjectStatus.Analyzing => "分析中",
+            ProjectStatus.ProcessingContent => "处理中",
+            ProjectStatus.GeneratingSlidev => "生成中",
+            ProjectStatus.ConvertingToPptx => "转换中",
+            ProjectStatus.Completed => "已完成",
+            ProjectStatus.Failed => "处理失败",
+            _ => "未知状态"
+        };
+    }
+}
