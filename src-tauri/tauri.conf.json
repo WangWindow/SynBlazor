@@ -1,8 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "SynBlazor",
+  "productName": "SlideSyn",
   "version": "0.1.0",
-  "identifier": "com.tauri.dev",
+  "identifier": "com.slidesyn.app",
   "build": {
     "frontendDist": "../dist/wwwroot",
     "devUrl": "http://localhost:5070",
@@ -13,7 +13,7 @@
   "app": {
     "windows": [
       {
-        "title": "SynBlazor",
+        "title": "SlideSyn",
         "width": 800,
         "height": 600,
         "resizable": true,
