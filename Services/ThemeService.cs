@@ -6,6 +6,7 @@ namespace SynBlazor.Services
     {
         Light,
         Dark,
+        Tiger,
         System
     }
 
@@ -69,7 +70,6 @@ namespace SynBlazor.Services
             // 通知主题变更
             ThemeChanged?.Invoke(theme);
         }
-
         private async Task ApplyThemeAsync(ThemeMode theme)
         {
             try
@@ -78,33 +78,44 @@ namespace SynBlazor.Services
                 {
                     ThemeMode.Light => "light",
                     ThemeMode.Dark => "dark",
+                    ThemeMode.Tiger => "tiger",
                     ThemeMode.System => await GetSystemThemeAsync(),
                     _ => "light"
                 };
 
-                // 使用更安全的方式设置主题类
-                await _jsRuntime.InvokeVoidAsync("setThemeClass", themeClass);
+                // 更安全的方式设置主题类
+                await _jsRuntime.InvokeVoidAsync("applyTheme", themeClass);
             }
             catch
             {
-                // 如果自定义函数不可用，回退到 eval 方式
+                // 如果自定义函数不可用，回退到直接DOM操作
                 var themeClass = theme switch
                 {
                     ThemeMode.Light => "light",
                     ThemeMode.Dark => "dark",
+                    ThemeMode.Tiger => "tiger",
                     ThemeMode.System => await GetSystemThemeAsync(),
                     _ => "light"
                 };
 
                 try
                 {
-                    // 设置 html 元素的 class 以应用主题
+                    // 移除所有主题类并应用新主题
                     await _jsRuntime.InvokeVoidAsync("eval",
-                        $"document.documentElement.className = document.documentElement.className.replace(/\\b(light|dark)\\b/g, '').trim(); document.documentElement.classList.add('{themeClass}')");
+                        $@"
+                        const html = document.documentElement;
+                        const body = document.body;
 
-                    // 同时设置 body 的 class 用于 CSS 变量
-                    await _jsRuntime.InvokeVoidAsync("eval",
-                        $"document.body.className = document.body.className.replace(/\\b(light|dark)\\b/g, '').trim(); document.body.classList.add('{themeClass}')");
+                        // 移除现有主题类
+                        html.classList.remove('light', 'dark', 'tiger');
+                        body.classList.remove('light', 'dark', 'tiger');
+
+                        // 添加新主题类（如果不是light则添加，因为light是默认主题）
+                        if ('{themeClass}' !== 'light') {{
+                            html.classList.add('{themeClass}');
+                            body.classList.add('{themeClass}');
+                        }}
+                        ");
                 }
                 catch
                 {

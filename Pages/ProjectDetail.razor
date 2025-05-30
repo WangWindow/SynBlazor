@@ -8,11 +8,11 @@
 @if (project == null && !isLoading)
 {
     <!-- Project Not Found -->
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+    <div class="min-h-screen bg-theme-base flex items-center justify-center">
         <div class="text-center">            <FluentIcon Value="@(new Icons.Regular.Size48.Document())"
                        Color="Color.Neutral" class="mb-4 opacity-50" />
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">项目未找到</h2>
-            <p class="text-gray-600 dark:text-gray-300 mb-4">请检查项目ID是否正确</p>
+            <h2 class="text-2xl font-bold text-theme-primary mb-2">项目未找到</h2>
+            <p class="text-theme-secondary mb-4">请检查项目ID是否正确</p>
             <FluentButton Appearance="Appearance.Accent" @onclick="NavigateToProjects">
                 返回项目列表
             </FluentButton>
@@ -22,14 +22,14 @@
 else if (isLoading)
 {
     <!-- Loading -->
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+    <div class="min-h-screen bg-theme-base flex items-center justify-center">
         <FluentProgressRing />
-        <span class="ml-3 text-gray-600 dark:text-gray-300">加载项目中...</span>
+        <span class="ml-3 text-theme-secondary">加载项目中...</span>
     </div>
 }
 else
 {
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div class="min-h-screen bg-theme-base">
         <div class="container mx-auto px-4 py-8">
             <!-- Header -->
             <div class="flex items-center justify-between mb-8">
@@ -40,12 +40,12 @@ else
                         返回
                     </FluentButton>
                     <div>
-                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">@project!.Title</h1>
+                        <h1 class="text-3xl font-bold text-theme-primary">@project!.Title</h1>
                         <div class="flex items-center gap-4 mt-2">
                             <FluentBadge Appearance="@GetStatusAppearance(project.Status)">
                                 @GetStatusText(project.Status)
                             </FluentBadge>
-                            <span class="text-sm text-gray-500 dark:text-gray-400">
+                            <span class="text-sm text-theme-muted">
                                 创建于 @project.CreatedAt.ToString("yyyy年MM月dd日")
                             </span>
                         </div>
@@ -80,8 +80,8 @@ else
                     {
                         <FluentCard>
                             <div class="p-6">
-                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">项目描述</h3>
-                                <p class="text-gray-600 dark:text-gray-300 leading-relaxed">@project.Description</p>
+                                <h3 class="text-lg font-semibold text-theme-primary mb-3">项目描述</h3>
+                                <p class="text-theme-secondary leading-relaxed">@project.Description</p>
                             </div>
                         </FluentCard>
                     }
@@ -91,7 +91,7 @@ else
                     {
                         <FluentCard>
                             <div class="p-6">
-                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">上传PDF文件</h3>
+                                <h3 class="text-lg font-semibold text-theme-primary mb-4">上传PDF文件</h3>
 
                                 <FluentInputFile @ref="fileInput"
                                                DragDropZoneVisible="true"
@@ -112,7 +112,7 @@ else
 
                                 @if (isUploading)
                                 {
-                                    <div class="flex items-center gap-2 text-blue-600">
+                                    <div class="flex items-center gap-2 text-theme-accent">
                                         <FluentProgressRing Style="width: 20px; height: 20px;" />
                                         <span>上传中...</span>
                                     </div>
@@ -125,10 +125,10 @@ else
                         <!-- PDF Info -->
                         <FluentCard>
                             <div class="p-6">
-                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">PDF文件信息</h3>
+                                <h3 class="text-lg font-semibold text-theme-primary mb-3">PDF文件信息</h3>
                                 <div class="flex items-center gap-3">
                                     <FluentIcon Value="@(new Icons.Regular.Size20.DocumentPdf())" Color="Color.Accent" />
-                                    <span class="text-gray-700 dark:text-gray-300">@project.PdfFileName</span>
+                                    <span class="text-theme-secondary">@project.PdfFileName</span>
                                 </div>
                             </div>
                         </FluentCard>
@@ -139,14 +139,14 @@ else
                     {
                         <FluentCard>
                             <div class="p-6">
-                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">处理进度</h3>
+                                <h3 class="text-lg font-semibold text-theme-primary mb-4">处理进度</h3>
 
                                 <div class="space-y-4">
                                     <!-- PDF Analysis -->
                                     <div>
                                         <div class="flex justify-between text-sm mb-1">
-                                            <span class="text-gray-600 dark:text-gray-300">PDF分析</span>
-                                            <span class="text-gray-500">@project.Progress.PdfAnalysisProgress%</span>
+                                            <span class="text-theme-secondary">PDF分析</span>
+                                            <span class="text-theme-muted">@project.Progress.PdfAnalysisProgress%</span>
                                         </div>
                                         <FluentProgress Value="@project.Progress.PdfAnalysisProgress" Max="100" />
                                     </div>
@@ -154,8 +154,8 @@ else
                                     <!-- Content Processing -->
                                     <div>
                                         <div class="flex justify-between text-sm mb-1">
-                                            <span class="text-gray-600 dark:text-gray-300">内容处理</span>
-                                            <span class="text-gray-500">@project.Progress.ContentProcessingProgress%</span>
+                                            <span class="text-theme-secondary">内容处理</span>
+                                            <span class="text-theme-muted">@project.Progress.ContentProcessingProgress%</span>
                                         </div>
                                         <FluentProgress Value="@project.Progress.ContentProcessingProgress" Max="100" />
                                     </div>
@@ -163,8 +163,8 @@ else
                                     <!-- Slidev Generation -->
                                     <div>
                                         <div class="flex justify-between text-sm mb-1">
-                                            <span class="text-gray-600 dark:text-gray-300">幻灯片生成</span>
-                                            <span class="text-gray-500">@project.Progress.SlidevGenerationProgress%</span>
+                                            <span class="text-theme-secondary">幻灯片生成</span>
+                                            <span class="text-theme-muted">@project.Progress.SlidevGenerationProgress%</span>
                                         </div>
                                         <FluentProgress Value="@project.Progress.SlidevGenerationProgress" Max="100" />
                                     </div>
@@ -172,17 +172,17 @@ else
                                     <!-- PPTX Conversion -->
                                     <div>
                                         <div class="flex justify-between text-sm mb-1">
-                                            <span class="text-gray-600 dark:text-gray-300">PPT转换</span>
-                                            <span class="text-gray-500">@project.Progress.PptxConversionProgress%</span>
+                                            <span class="text-theme-secondary">PPT转换</span>
+                                            <span class="text-theme-muted">@project.Progress.PptxConversionProgress%</span>
                                         </div>
                                         <FluentProgress Value="@project.Progress.PptxConversionProgress" Max="100" />
                                     </div>
 
                                     <!-- Overall Progress -->
-                                    <div class="pt-2 border-t">
+                                    <div class="pt-2 border-t border-theme-base">
                                         <div class="flex justify-between text-sm font-medium mb-1">
-                                            <span class="text-gray-900 dark:text-white">总体进度</span>
-                                            <span class="text-blue-600">@project.Progress.TotalProgress%</span>
+                                            <span class="text-theme-primary">总体进度</span>
+                                            <span class="text-theme-accent">@project.Progress.TotalProgress%</span>
                                         </div>
                                         <FluentProgress Value="@project.Progress.TotalProgress" Max="100" Color="Color.Accent" />
                                     </div>
@@ -195,9 +195,9 @@ else
                     @if (!string.IsNullOrEmpty(project.ErrorMessage))
                     {
                         <FluentCard>
-                            <div class="p-6 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500">
-                                <h3 class="text-lg font-semibold text-red-800 dark:text-red-200 mb-2">处理错误</h3>
-                                <p class="text-red-700 dark:text-red-300">@project.ErrorMessage</p>
+                            <div class="p-6 bg-theme-error-bg border-l-4 border-theme-error">
+                                <h3 class="text-lg font-semibold text-theme-error mb-2">处理错误</h3>
+                                <p class="text-theme-error">@project.ErrorMessage</p>
                             </div>
                         </FluentCard>
                     }
@@ -208,14 +208,14 @@ else
                     <!-- Project Timeline -->
                     <FluentCard>
                         <div class="p-6">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">项目时间轴</h3>
+                            <h3 class="text-lg font-semibold text-theme-primary mb-4">项目时间轴</h3>
                             <div class="space-y-3">
                                 <div class="flex items-center gap-3">
                                     <FluentIcon Value="@(new Icons.Regular.Size16.Circle())"
                                                Color="Color.Accent" />
                                     <div>
-                                        <div class="text-sm font-medium text-gray-900 dark:text-white">项目创建</div>
-                                        <div class="text-xs text-gray-500">@project.CreatedAt.ToString("yyyy-MM-dd HH:mm")</div>
+                                        <div class="text-sm font-medium text-theme-primary">项目创建</div>
+                                        <div class="text-xs text-theme-muted">@project.CreatedAt.ToString("yyyy-MM-dd HH:mm")</div>
                                     </div>
                                 </div>
 
@@ -225,8 +225,8 @@ else
                                         <FluentIcon Value="@(new Icons.Regular.Size16.Circle())"
                                                    Color="Color.Success" />
                                         <div>
-                                            <div class="text-sm font-medium text-gray-900 dark:text-white">最后更新</div>
-                                            <div class="text-xs text-gray-500">@project.UpdatedAt.Value.ToString("yyyy-MM-dd HH:mm")</div>
+                                            <div class="text-sm font-medium text-theme-primary">最后更新</div>
+                                            <div class="text-xs text-theme-muted">@project.UpdatedAt.Value.ToString("yyyy-MM-dd HH:mm")</div>
                                         </div>
                                     </div>
                                 }
@@ -237,7 +237,7 @@ else
                     <!-- Quick Actions -->
                     <FluentCard>
                         <div class="p-6">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">快速操作</h3>
+                            <h3 class="text-lg font-semibold text-theme-primary mb-4">快速操作</h3>
                             <div class="space-y-2">
                                 <FluentButton Appearance="Appearance.Outline"
                                              Style="width: 100%"

@@ -8,14 +8,14 @@
 
 <PageTitle>SynBlazor - PDF综述转PPT</PageTitle>
 
-<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+<div class="min-h-screen bg-theme-base">
     <div class="container mx-auto px-4 py-12">
         <!-- Header Section -->
         <div class="text-center mb-16">
-            <h1 class="text-5xl font-bold text-gray-900 dark:text-white mb-6">
+            <h1 class="text-5xl font-bold text-theme-primary mb-6">
                 SynBlazor
             </h1>
-            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
+            <p class="text-xl text-theme-secondary max-w-3xl mx-auto leading-relaxed">
                 智能PDF综述转换工具，通过AI分析学术文献内容，自动生成专业的PowerPoint演示文稿
             </p>
         </div>
@@ -24,14 +24,14 @@
         <div class="max-w-4xl mx-auto mb-12">
             <div class="grid md:grid-cols-2 gap-8">
                 <!-- Create New Project Card -->
-                <FluentCard class="p-8 hover:shadow-lg transition-all duration-300 border-0 bg-white dark:bg-gray-800">
+                <FluentCard class="p-8 hover:shadow-lg transition-all duration-300 border-0 bg-theme-surface">
                     <div class="text-center">
                         <FluentIcon Value="@(new Icons.Regular.Size48.DocumentAdd())" Color="Color.Accent"
                             class="mb-4" />
-                        <h3 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+                        <h3 class="text-2xl font-semibold text-theme-primary mb-4">
                             创建新项目
                         </h3>
-                        <p class="text-gray-600 dark:text-gray-300 mb-6">
+                        <p class="text-theme-secondary mb-6">
                             上传PDF综述文件，开始智能转换过程
                         </p>
                         <FluentButton Appearance="Appearance.Accent" class="px-8 py-3 text-lg font-medium"
@@ -42,13 +42,13 @@
                 </FluentCard>
 
                 <!-- View Projects Card -->
-                <FluentCard class="p-8 hover:shadow-lg transition-all duration-300 border-0 bg-white dark:bg-gray-800">
+                <FluentCard class="p-8 hover:shadow-lg transition-all duration-300 border-0 bg-theme-surface">
                     <div class="text-center">
                         <FluentIcon Value="@(new Icons.Regular.Size48.Folder())" Color="Color.Accent" class="mb-4" />
-                        <h3 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+                        <h3 class="text-2xl font-semibold text-theme-primary mb-4">
                             查看项目
                         </h3>
-                        <p class="text-gray-600 dark:text-gray-300 mb-6">
+                        <p class="text-theme-secondary mb-6">
                             管理已有项目，查看处理进度和下载结果
                         </p>
                         <FluentButton Appearance="Appearance.Outline" class="px-8 py-3 text-lg font-medium"
@@ -62,34 +62,34 @@
 
         <!-- Features Section -->
         <div class="max-w-6xl mx-auto">
-            <h2 class="text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">
+            <h2 class="text-3xl font-bold text-center text-theme-primary mb-12">
                 核心功能
             </h2>
             <div class="grid md:grid-cols-3 gap-8">
                 <div class="text-center p-6">
                     <FluentIcon Value="@(new Icons.Regular.Size32.DocumentPdf())" Color="Color.Info" class="mb-4" />
-                    <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                    <h4 class="text-lg font-semibold text-theme-primary mb-2">
                         PDF智能解析
                     </h4>
-                    <p class="text-gray-600 dark:text-gray-300">
+                    <p class="text-theme-secondary">
                         自动提取文档结构、关键内容和学术引用
                     </p>
                 </div>
                 <div class="text-center p-6">
                     <FluentIcon Value="@(new Icons.Regular.Size32.Settings())" Color="Color.Success" class="mb-4" />
-                    <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                    <h4 class="text-lg font-semibold text-theme-primary mb-2">
                         AI内容分析
                     </h4>
-                    <p class="text-gray-600 dark:text-gray-300">
+                    <p class="text-theme-secondary">
                         深度理解文献内容，生成结构化演示大纲
                     </p>
                 </div>
                 <div class="text-center p-6">
                     <FluentIcon Value="@(new Icons.Regular.Size32.Document())" Color="Color.Warning" class="mb-4" />
-                    <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                    <h4 class="text-lg font-semibold text-theme-primary mb-2">
                         自动生成PPT
                     </h4>
-                    <p class="text-gray-600 dark:text-gray-300">
+                    <p class="text-theme-secondary">
                         基于Slidev模板，输出专业的PowerPoint文件
                     </p>
                 </div>

@@ -5,13 +5,13 @@
 
 <PageTitle>项目总览 - SynBlazor</PageTitle>
 
-<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+<div class="min-h-screen bg-theme-base">
     <div class="container mx-auto px-4 py-8">
         <!-- Header -->
         <div class="flex justify-between items-center mb-8">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">项目总览</h1>
-                <p class="text-gray-600 dark:text-gray-300 mt-2">管理您的PDF转PPT项目</p>
+                <h1 class="text-3xl font-bold text-theme-primary">项目总览</h1>
+                <p class="text-theme-secondary mt-2">管理您的PDF转PPT项目</p>
             </div>
             <FluentButton Appearance="Appearance.Accent" @onclick="NavigateToHome"
                 IconStart="@(new Icons.Regular.Size20.Add())">
@@ -24,7 +24,7 @@
         {
             <div class="flex justify-center items-center py-12">
                 <FluentProgressRing />
-                <span class="ml-3 text-gray-600 dark:text-gray-300">加载项目中...</span>
+                <span class="ml-3 text-theme-secondary">加载项目中...</span>
             </div>
         }
         else if (projects?.Any() == true)
@@ -45,13 +45,13 @@
                             </div>
 
                             <!-- Project Info -->
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2">
+                            <h3 class="text-lg font-semibold text-theme-primary mb-2 line-clamp-2">
                                 @project.Title
                             </h3>
 
                             @if (!string.IsNullOrEmpty(project.Description))
                             {
-                                <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3">
+                                <p class="text-theme-secondary text-sm mb-4 line-clamp-3">
                                     @project.Description
                                 </p>
                             }
@@ -60,7 +60,7 @@
                             @if (project.Status != ProjectStatus.Created && project.Status != ProjectStatus.Failed)
                             {
                                 <div class="mb-4">
-                                    <div class="flex justify-between text-xs text-gray-600 dark:text-gray-400 mb-1">
+                                    <div class="flex justify-between text-xs text-theme-muted mb-1">
                                         <span>处理进度</span>
                                         <span>@project.Progress.TotalProgress%</span>
                                     </div>
@@ -69,7 +69,7 @@
                             }
 
                             <!-- Timestamps -->
-                            <div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
+                            <div class="flex justify-between items-center text-xs text-theme-muted">
                                 <span>创建于 @project.CreatedAt.ToString("yyyy-MM-dd")</span>
                                 @if (project.UpdatedAt.HasValue)
                                 {
@@ -105,10 +105,10 @@
             <div class="text-center py-16">
                 <FluentIcon Value="@(new Icons.Regular.Size48.Folder())" Color="Color.Neutral"
                     class="mb-4 opacity-50" />
-                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                <h3 class="text-xl font-semibold text-theme-primary mb-2">
                     还没有项目
                 </h3>
-                <p class="text-gray-600 dark:text-gray-300 mb-6">
+                <p class="text-theme-secondary mb-6">
                     创建您的第一个PDF转PPT项目
                 </p>
                 <FluentButton Appearance="Appearance.Accent" @onclick="NavigateToHome"

@@ -1,12 +1,266 @@
 /* @import "_content/Microsoft.FluentUI.AspNetCore.Components/css/reboot.css"; */
 @import "tailwindcss";
 
+/* Theme Variables - Tailwind 4 Compatible */
+:root {
+    /* Light Theme - Default */
+    --color-highlight: 59, 130, 246;
+    --color-bg-base: 249, 250, 251;
+    --color-bg-nav: 243, 244, 246;
+    --color-bg-surface: 255, 255, 255;
+    --color-bg-surface-hover: 248, 250, 252;
+    --color-text-main: 31, 41, 55;
+    --color-text-secondary: 107, 114, 128;
+    --color-text-muted: 156, 163, 175;
+    --color-text-invert: 249, 250, 251;
+    --color-fill-main: 59, 130, 246;
+    --color-fill-muted: 191, 219, 254;
+    --color-border-base: 229, 231, 235;
+    --color-border-hover: 209, 213, 219;
+    --color-accent: 59, 130, 246;
+    --color-accent-hover: 37, 99, 235;
+    --color-success: 34, 197, 94;
+    --color-warning: 245, 158, 11;
+    --color-error: 239, 68, 68;
+    --color-error-bg: 254, 242, 242;
+    --color-info: 59, 130, 246;
+}
+
+/* Dark Theme */
+.dark {
+    --color-highlight: 96, 165, 250;
+    --color-bg-base: 17, 24, 39;
+    --color-bg-nav: 31, 41, 55;
+    --color-bg-surface: 31, 41, 55;
+    --color-bg-surface-hover: 55, 65, 81;
+    --color-text-main: 249, 250, 251;
+    --color-text-secondary: 209, 213, 219;
+    --color-text-muted: 156, 163, 175;
+    --color-text-invert: 17, 24, 39;
+    --color-fill-main: 96, 165, 250;
+    --color-fill-muted: 30, 64, 175;
+    --color-border-base: 75, 85, 99;
+    --color-border-hover: 107, 114, 128;
+    --color-accent: 96, 165, 250;
+    --color-accent-hover: 59, 130, 246;
+    --color-success: 34, 197, 94;
+    --color-warning: 245, 158, 11;
+    --color-error: 239, 68, 68;
+    --color-error-bg: 69, 10, 10;
+    --color-info: 96, 165, 250;
+}
+
+/* Tiger Theme - 虎年主题 */
+.tiger {
+    --color-highlight: 245, 158, 11;
+    --color-bg-base: 255, 251, 235;
+    --color-bg-nav: 254, 243, 199;
+    --color-bg-surface: 255, 255, 255;
+    --color-bg-surface-hover: 254, 252, 232;
+    --color-text-main: 120, 53, 15;
+    --color-text-secondary: 180, 83, 9;
+    --color-text-muted: 217, 119, 6;
+    --color-text-invert: 255, 251, 235;
+    --color-fill-main: 251, 113, 133;
+    --color-fill-muted: 252, 165, 165;
+    --color-border-base: 252, 211, 77;
+    --color-border-hover: 245, 158, 11;
+    --color-accent: 251, 113, 133;
+    --color-accent-hover: 244, 63, 94;
+    --color-success: 34, 197, 94;
+    --color-warning: 245, 158, 11;
+    --color-error: 239, 68, 68;
+    --color-error-bg: 254, 242, 242;
+    --color-info: 251, 113, 133;
+}
+
+/* Theme utility classes */
+.text-theme-primary {
+    color: rgb(var(--color-text-main));
+}
+
+.text-theme-secondary {
+    color: rgb(var(--color-text-secondary));
+}
+
+.text-theme-muted {
+    color: rgb(var(--color-text-muted));
+}
+
+.text-theme-invert {
+    color: rgb(var(--color-text-invert));
+}
+
+.bg-theme-base {
+    background-color: rgb(var(--color-bg-base));
+}
+
+.bg-theme-nav {
+    background-color: rgb(var(--color-bg-nav));
+}
+
+.bg-theme-surface {
+    background-color: rgb(var(--color-bg-surface));
+}
+
+.bg-theme-surface-hover {
+    background-color: rgb(var(--color-bg-surface-hover));
+}
+
+.border-theme-base {
+    border-color: rgb(var(--color-border-base));
+}
+
+.border-theme-hover {
+    border-color: rgb(var(--color-border-hover));
+}
+
+.bg-theme-accent {
+    background-color: rgb(var(--color-accent));
+}
+
+.bg-theme-accent-hover {
+    background-color: rgb(var(--color-accent-hover));
+}
+
+.text-theme-accent {
+    color: rgb(var(--color-accent));
+}
+
+.fill-theme-main {
+    fill: rgb(var(--color-fill-main));
+}
+
+.fill-theme-muted {
+    fill: rgb(var(--color-fill-muted));
+}
+
+.shadow-theme-lg {
+    box-shadow: 0 10px 15px -3px rgb(var(--color-text-main) / 0.1), 0 4px 6px -2px rgb(var(--color-text-main) / 0.05);
+}
+
+/* Semantic colors */
+.text-theme-success {
+    color: rgb(var(--color-success));
+}
+
+.text-theme-warning {
+    color: rgb(var(--color-warning));
+}
+
+.text-theme-error {
+    color: rgb(var(--color-error));
+}
+
+.text-theme-info {
+    color: rgb(var(--color-info));
+}
+
+.bg-theme-success {
+    background-color: rgb(var(--color-success));
+}
+
+.bg-theme-warning {
+    background-color: rgb(var(--color-warning));
+}
+
+.bg-theme-error {
+    background-color: rgb(var(--color-error));
+}
+
+.bg-theme-info {
+    background-color: rgb(var(--color-info));
+}
+
+.bg-theme-success-bg {
+    background-color: rgb(var(--color-success) / 0.1);
+}
+
+.bg-theme-warning-bg {
+    background-color: rgb(var(--color-warning) / 0.1);
+}
+
+.bg-theme-error-bg {
+    background-color: rgb(var(--color-error-bg));
+}
+
+.bg-theme-info-bg {
+    background-color: rgb(var(--color-info) / 0.1);
+}
+
+.border-theme-success {
+    border-color: rgb(var(--color-success));
+}
+
+.border-theme-warning {
+    border-color: rgb(var(--color-warning));
+}
+
+.border-theme-error {
+    border-color: rgb(var(--color-error));
+}
+
+.border-theme-info {
+    border-color: rgb(var(--color-info));
+}
+
+/* Theme overlay styles for theme panel */
+.theme-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-sidebar {
+    position: fixed;
+    top: 60px;
+    right: 20px;
+    width: 320px;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    border-radius: 12px;
+    border: 1px solid rgb(var(--color-border-base));
+    z-index: 1001;
+}
+
+.theme-options {
+    padding: 24px;
+}
+
+.theme-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.theme-option-item {
+    border: 1px solid rgb(var(--color-border-base));
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.theme-option-item:hover {
+    background-color: rgb(var(--color-bg-surface-hover));
+    border-color: rgb(var(--color-border-hover));
+}
+
 body {
     --body-font: "Segoe UI Variable", "Segoe UI", sans-serif;
     font-family: var(--body-font);
     font-size: var(--type-ramp-base-font-size);
     line-height: var(--type-ramp-base-line-height);
     margin: 0;
+    background-color: rgb(var(--color-bg-base));
+    color: rgb(var(--color-text-main));
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .navmenu-icon {
