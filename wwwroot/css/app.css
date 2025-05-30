@@ -1,34 +1,361 @@
-/* @import "_content/Microsoft.FluentUI.AspNetCore.Components/css/reboot.css"; */
 @import "tailwindcss";
 
+@theme {
+    --color-primary-50: 240 249 255;
+    --color-primary-100: 224 242 254;
+    --color-primary-200: 186 230 253;
+    --color-primary-300: 125 211 252;
+    --color-primary-400: 56 189 248;
+    --color-primary-500: 14 165 233;
+    --color-primary-600: 2 132 199;
+    --color-primary-700: 3 105 161;
+    --color-primary-800: 7 89 133;
+    --color-primary-900: 12 74 110;
+    --color-primary-950: 8 47 73;
+
+    --color-gray-50: 248 250 252;
+    --color-gray-100: 241 245 249;
+    --color-gray-200: 226 232 240;
+    --color-gray-300: 203 213 225;
+    --color-gray-400: 148 163 184;
+    --color-gray-500: 100 116 139;
+    --color-gray-600: 71 85 105;
+    --color-gray-700: 51 65 85;
+    --color-gray-800: 30 41 59;
+    --color-gray-900: 15 23 42;
+    --color-gray-950: 2 6 23;
+
+    --color-success-50: 240 253 244;
+    --color-success-100: 220 252 231;
+    --color-success-200: 187 247 208;
+    --color-success-300: 134 239 172;
+    --color-success-400: 74 222 128;
+    --color-success-500: 34 197 94;
+    --color-success-600: 22 163 74;
+    --color-success-700: 21 128 61;
+    --color-success-800: 22 101 52;
+    --color-success-900: 20 83 45;
+    --color-success-950: 5 46 22;
+
+    --color-warning-50: 254 252 232;
+    --color-warning-100: 254 249 195;
+    --color-warning-200: 254 240 138;
+    --color-warning-300: 253 224 71;
+    --color-warning-400: 250 204 21;
+    --color-warning-500: 234 179 8;
+    --color-warning-600: 202 138 4;
+    --color-warning-700: 161 98 7;
+    --color-warning-800: 133 77 14;
+    --color-warning-900: 113 63 18;
+    --color-warning-950: 66 32 6;
+
+    --color-danger-50: 254 242 242;
+    --color-danger-100: 254 226 226;
+    --color-danger-200: 254 202 202;
+    --color-danger-300: 252 165 165;
+    --color-danger-400: 248 113 113;
+    --color-danger-500: 239 68 68;
+    --color-danger-600: 220 38 38;
+    --color-danger-700: 185 28 28;
+    --color-danger-800: 153 27 27;
+    --color-danger-900: 127 29 29;
+    --color-danger-950: 69 10 10;
+}
+
+/* 亮色主题 */
+:root,
+.light {
+    --bg-base: rgb(var(--color-gray-50));
+    --bg-surface: rgb(255 255 255);
+    --bg-surface-hover: rgb(var(--color-gray-100));
+    --bg-accent: rgb(var(--color-primary-600));
+    --bg-accent-hover: rgb(var(--color-primary-700));
+
+    --text-primary: rgb(var(--color-gray-900));
+    --text-secondary: rgb(var(--color-gray-600));
+    --text-tertiary: rgb(var(--color-gray-500));
+    --text-on-accent: rgb(255 255 255);
+
+    --border-base: rgb(var(--color-gray-200));
+    --border-hover: rgb(var(--color-gray-300));
+    --border-accent: rgb(var(--color-primary-300));
+
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+/* 暗色主题 */
+.dark {
+    --bg-base: rgb(var(--color-gray-950));
+    --bg-surface: rgb(var(--color-gray-900));
+    --bg-surface-hover: rgb(var(--color-gray-800));
+    --bg-accent: rgb(var(--color-primary-500));
+    --bg-accent-hover: rgb(var(--color-primary-400));
+
+    --text-primary: rgb(var(--color-gray-50));
+    --text-secondary: rgb(var(--color-gray-300));
+    --text-tertiary: rgb(var(--color-gray-400));
+    --text-on-accent: rgb(255 255 255);
+
+    --border-base: rgb(var(--color-gray-800));
+    --border-hover: rgb(var(--color-gray-700));
+    --border-accent: rgb(var(--color-primary-600));
+
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+}
+
+/* Body 基础样式 */
 body {
-    --body-font: "Segoe UI Variable", "Segoe UI", sans-serif;
-    font-family: var(--body-font);
-    font-size: var(--type-ramp-base-font-size);
-    line-height: var(--type-ramp-base-line-height);
-    margin: 0;
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
-.navmenu-icon {
-    display: none;
+/* Tailwind Utilities 扩展 */
+@layer utilities {
+    .bg-base {
+        background-color: var(--bg-base);
+    }
+
+    .bg-surface {
+        background-color: var(--bg-surface);
+    }
+
+    .bg-surface-hover {
+        background-color: var(--bg-surface-hover);
+    }
+
+    .bg-accent {
+        background-color: var(--bg-accent);
+    }
+
+    .bg-accent-hover {
+        background-color: var(--bg-accent-hover);
+    }
+
+    .text-primary {
+        color: var(--text-primary);
+    }
+
+    .text-secondary {
+        color: var(--text-secondary);
+    }
+
+    .text-tertiary {
+        color: var(--text-tertiary);
+    }
+
+    .text-on-accent {
+        color: var(--text-on-accent);
+    }
+
+    .border-base {
+        border-color: var(--border-base);
+    }
+
+    .border-hover {
+        border-color: var(--border-hover);
+    }
+
+    .border-accent {
+        border-color: var(--border-accent);
+    }
+
+    .shadow-custom-sm {
+        box-shadow: var(--shadow-sm);
+    }
+
+    .shadow-custom-md {
+        box-shadow: var(--shadow-md);
+    }
+
+    .shadow-custom-lg {
+        box-shadow: var(--shadow-lg);
+    }
 }
 
+/* 主布局样式 */
 .main {
-    min-height: calc(100dvh - 86px);
-    color: var(--neutral-foreground-rest);
-    align-items: stretch !important;
-}
-
-.body-content {
-    align-self: stretch;
-    height: calc(100dvh - 86px) !important;
     display: flex;
+    flex-direction: row;
+    background-color: var(--bg-base);
+    min-height: 100vh;
 }
 
-.content {
-    padding: 0.5rem 1.5rem;
-    align-self: stretch !important;
-    width: 100%;
+/* 导航样式 */
+.sitenav {
+    background-color: var(--bg-surface);
+    border-right: 1px solid var(--border-base);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* 页面内容样式 */
+.page {
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    padding: 1rem;
+}
+
+/* 卡片样式 */
+.card {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-base);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow-md);
+}
+
+/* 按钮样式 */
+.btn-primary {
+    background-color: var(--bg-accent);
+    color: var(--text-on-accent);
+    border: 1px solid var(--bg-accent);
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--bg-accent-hover);
+    border-color: var(--bg-accent-hover);
+}
+
+.btn-secondary {
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border-base);
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color: var(--bg-surface-hover);
+    border-color: var(--border-hover);
+}
+
+/* Header 样式 */
+.header {
+    background-color: var(--bg-surface);
+    border-bottom: 1px solid var(--border-base);
+    transition: all 0.3s ease;
+}
+
+/* 输入框样式 */
+.form-input {
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border-base);
+    transition: all 0.3s ease;
+}
+
+.form-input:focus {
+    border-color: var(--border-accent);
+    outline: none;
+    box-shadow: 0 0 0 3px rgb(var(--color-primary-100));
+}
+
+.dark .form-input:focus {
+    box-shadow: 0 0 0 3px rgb(var(--color-primary-900));
+}
+
+/* Fluent UI 组件与主题集成 */
+fluent-design-system-provider {
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+}
+
+fluent-button {
+    --accent-fill-rest: var(--bg-accent);
+    --accent-fill-hover: var(--bg-accent-hover);
+    --neutral-fill-rest: var(--bg-surface);
+    --neutral-fill-hover: var(--bg-surface-hover);
+    --neutral-foreground-rest: var(--text-primary);
+    --neutral-stroke-rest: var(--border-base);
+}
+
+fluent-text-field,
+fluent-text-area {
+    --neutral-fill-input-rest: var(--bg-surface);
+    --neutral-foreground-rest: var(--text-primary);
+    --neutral-stroke-rest: var(--border-base);
+    --accent-fill-rest: var(--bg-accent);
+}
+
+fluent-dialog {
+    --neutral-layer-floating: var(--bg-surface);
+    --neutral-foreground-rest: var(--text-primary);
+    --neutral-stroke-rest: var(--border-base);
+}
+
+/* 主题切换组件样式 */
+.theme-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: flex-end;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.theme-sidebar {
+    width: 20rem;
+    height: 100%;
+    padding: 1.5rem;
+    overflow-y: auto;
+    background-color: var(--bg-surface);
+    box-shadow: var(--shadow-lg);
+    border-left: 1px solid var(--border-base);
+}
+
+.theme-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.theme-option-item {
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-base);
+    transition: all 0.3s ease;
+}
+
+.theme-option-item:hover {
+    border-color: var(--border-hover);
+    background-color: var(--bg-surface-hover);
+}
+
+.theme-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.theme-header h4 {
+    margin: 0;
+    flex: 1;
+    color: var(--text-primary);
+}
+
+.theme-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+/* 主题切换动画 */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 footer {

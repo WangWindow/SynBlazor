@@ -1,0 +1,92 @@
+@using Microsoft.FluentUI.AspNetCore.Components
+@using SynBlazor.Models
+@inject IProjectService ProjectService
+@inject NavigationManager Navigation
+@implements IDialogContentComponent<CreateProjectData>
+
+<FluentDialogHeader>
+    <h3 class="text-lg font-semibold">创建新项目</h3>
+</FluentDialogHeader>
+
+<FluentDialogBody>
+    <FluentStack Orientation="Orientation.Vertical" Class="gap-4">
+        <FluentTextField @bind-Value="ProjectData.ProjectName"
+                       Label="项目标题"
+                       Required="true"
+                       Placeholder="请输入项目标题..."
+                       Style="width: 100%;" />
+
+        <FluentTextArea @bind-Value="ProjectData.ProjectDescription"
+                      Label="项目描述"
+                      Rows="3"
+                      Placeholder="简要描述您的综述内容..."
+                      Style="width: 100%;" />
+    </FluentStack>
+</FluentDialogBody>
+
+<FluentDialogFooter>
+    <FluentButton Appearance="Appearance.Neutral"
+                 @onclick="Cancel"
+                 Disabled="@IsCreating">
+        取消
+    </FluentButton>
+    <FluentButton Appearance="Appearance.Accent"
+                 @onclick="CreateProject"
+                 Loading="@IsCreating"
+                 Disabled="@(string.IsNullOrWhiteSpace(ProjectData.ProjectName) || IsCreating)">
+        @if (IsCreating)
+        {
+            <span>创建中...</span>
+        }
+        else
+        {
+            <span>创建项目</span>
+        }
+    </FluentButton>
+</FluentDialogFooter>
+
+@code {
+    [Parameter] public CreateProjectData Content { get; set; } = default!;
+    [CascadingParameter] public FluentDialog Dialog { get; set; } = default!;
+
+    private CreateProjectData ProjectData = new();
+    private bool IsCreating = false;
+
+    protected override void OnInitialized()
+    {
+        ProjectData = Content ?? new CreateProjectData();
+    }
+
+    private async Task CreateProject()
+    {
+        if (string.IsNullOrWhiteSpace(ProjectData.ProjectName))
+            return;
+
+        IsCreating = true;
+        StateHasChanged();
+
+        try
+        {
+            var project = await ProjectService.CreateProjectAsync(ProjectData.ProjectName, ProjectData.ProjectDescription);
+
+            // 返回创建成功的结果
+            await Dialog.CloseAsync(project);
+        }
+        catch (Exception ex)
+        {
+            // 这里可以显示更好的错误提示
+            Console.WriteLine($"创建项目失败: {ex.Message}");
+            // 可以考虑显示 FluentMessageBar 或其他错误提示组件
+        }
+        finally
+        {
+            IsCreating = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task Cancel()
+    {
+        await Dialog.CancelAsync();
+    }
+}

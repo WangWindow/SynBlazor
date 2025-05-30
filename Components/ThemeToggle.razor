@@ -1,0 +1,107 @@
+@using SynBlazor.Services
+@inject IThemeService ThemeService
+@implements IDisposable
+
+<FluentButton Appearance="Appearance.Stealth" IconEnd="@(new Icons.Regular.Size20.DarkTheme())" @onclick="ToggleThemePanel"
+    Title="主题设置">
+</FluentButton>
+
+<!-- 使用简单的侧边栏而不是 FluentOffcanvas -->
+@if (IsThemePanelOpen)
+{
+    <div class="theme-overlay" @onclick="CloseThemePanel">
+        <div class="theme-sidebar" @onclick:stopPropagation="true">
+            <FluentStack Orientation="Orientation.Vertical" Class="theme-options">
+                <div class="theme-header">
+                    <h4>选择主题</h4>
+                    <FluentButton Appearance="Appearance.Stealth" IconEnd="@(new Icons.Regular.Size20.Dismiss())"
+                        @onclick="CloseThemePanel" Title="关闭">
+                    </FluentButton>
+                </div>
+
+                <FluentDivider />
+
+                <FluentRadioGroup @bind-Value="@SelectedTheme" Orientation="Orientation.Vertical" Name="theme-selection">
+
+                    <FluentRadio Value="@ThemeMode.Light" Class="theme-option-item">
+                        <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                            <FluentIcon Value="@(new Icons.Regular.Size20.WeatherSunny())" Color="Color.Warning" />
+                            <span>浅色主题</span>
+                        </FluentStack>
+                    </FluentRadio>
+
+                    <FluentRadio Value="@ThemeMode.Dark" Class="theme-option-item">
+                        <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                            <FluentIcon Value="@(new Icons.Regular.Size20.WeatherMoon())" Color="Color.Info" />
+                            <span>深色主题</span>
+                        </FluentStack>
+                    </FluentRadio>
+
+                    <FluentRadio Value="@ThemeMode.System" Class="theme-option-item">
+                        <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                            <FluentIcon Value="@(new Icons.Regular.Size20.Desktop())" Color="Color.Neutral" />
+                            <span>跟随系统</span>
+                        </FluentStack>
+                    </FluentRadio>
+
+                </FluentRadioGroup>
+
+                <FluentDivider />
+
+                <div class="theme-actions">
+                    <FluentButton Appearance="Appearance.Neutral" @onclick="CloseThemePanel">
+                        取消
+                    </FluentButton>
+                    <FluentButton Appearance="Appearance.Accent" @onclick="ApplyTheme">
+                        应用
+                    </FluentButton>
+                </div>
+            </FluentStack>
+        </div>
+    </div>
+}
+
+@code {
+    private ThemeMode SelectedTheme = ThemeMode.Light; // 默认为亮色主题
+    private bool IsThemePanelOpen = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        SelectedTheme = ThemeService.CurrentTheme;
+        ThemeService.ThemeChanged += OnThemeChanged;
+        // 确保默认应用亮色主题
+        if (ThemeService.CurrentTheme == ThemeMode.System)
+        {
+            await ThemeService.SetThemeAsync(ThemeMode.Light);
+        }
+        await base.OnInitializedAsync();
+    }
+
+    private void OnThemeChanged(ThemeMode newTheme)
+    {
+        SelectedTheme = newTheme;
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void ToggleThemePanel()
+    {
+        IsThemePanelOpen = !IsThemePanelOpen;
+    }
+
+    private void CloseThemePanel()
+    {
+        IsThemePanelOpen = false;
+        SelectedTheme = ThemeService.CurrentTheme; // 重置选择
+    }
+
+    private async Task ApplyTheme()
+    {
+        await ThemeService.SetThemeAsync(SelectedTheme);
+        IsThemePanelOpen = false;
+    }
+
+    public void Dispose()
+    {
+        ThemeService.ThemeChanged -= OnThemeChanged;
+    }
+}

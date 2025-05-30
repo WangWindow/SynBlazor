@@ -12,5 +12,20 @@
   "dependencies": {
     "@tailwindcss/cli": "^4.1.7",
     "tailwindcss": "^4.1.7"
-  }
+  },
+  "name": "synblazor",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WangWindow/SynBlazor.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WangWindow/SynBlazor/issues"
+  },
+  "homepage": "https://github.com/WangWindow/SynBlazor#readme",
+  "description": ""
 }

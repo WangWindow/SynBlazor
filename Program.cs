@@ -13,5 +13,6 @@ builder.Services.AddFluentUIComponents();
 
 // 注册项目服务
 builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IThemeService, ThemeService>();
 
 await builder.Build().RunAsync();

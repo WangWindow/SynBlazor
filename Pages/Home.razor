@@ -1,7 +1,10 @@
 @page "/"
+@using SynBlazor.Components
+@using SynBlazor.Models
 @inject IProjectService ProjectService
 @inject NavigationManager Navigation
 @inject IJSRuntime JSRuntime
+@inject IDialogService DialogService
 
 <PageTitle>SynBlazor - PDF综述转PPT</PageTitle>
 
@@ -23,17 +26,16 @@
                 <!-- Create New Project Card -->
                 <FluentCard class="p-8 hover:shadow-lg transition-all duration-300 border-0 bg-white dark:bg-gray-800">
                     <div class="text-center">
-                        <FluentIcon Value="@(new Icons.Regular.Size48.DocumentAdd())"
-                                   Color="Color.Accent" class="mb-4" />
+                        <FluentIcon Value="@(new Icons.Regular.Size48.DocumentAdd())" Color="Color.Accent"
+                            class="mb-4" />
                         <h3 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
                             创建新项目
                         </h3>
                         <p class="text-gray-600 dark:text-gray-300 mb-6">
                             上传PDF综述文件，开始智能转换过程
                         </p>
-                        <FluentButton Appearance="Appearance.Accent"
-                                     class="px-8 py-3 text-lg font-medium"
-                                     @onclick="ShowCreateProjectDialog">
+                        <FluentButton Appearance="Appearance.Accent" class="px-8 py-3 text-lg font-medium"
+                            @onclick="ShowCreateProjectDialog">
                             开始创建
                         </FluentButton>
                     </div>
@@ -41,17 +43,16 @@
 
                 <!-- View Projects Card -->
                 <FluentCard class="p-8 hover:shadow-lg transition-all duration-300 border-0 bg-white dark:bg-gray-800">
-                    <div class="text-center">                        <FluentIcon Value="@(new Icons.Regular.Size48.Folder())"
-                                   Color="Color.Accent" class="mb-4" />
+                    <div class="text-center">
+                        <FluentIcon Value="@(new Icons.Regular.Size48.Folder())" Color="Color.Accent" class="mb-4" />
                         <h3 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
                             查看项目
                         </h3>
                         <p class="text-gray-600 dark:text-gray-300 mb-6">
                             管理已有项目，查看处理进度和下载结果
                         </p>
-                        <FluentButton Appearance="Appearance.Outline"
-                                     class="px-8 py-3 text-lg font-medium"
-                                     @onclick="NavigateToProjects">
+                        <FluentButton Appearance="Appearance.Outline" class="px-8 py-3 text-lg font-medium"
+                            @onclick="NavigateToProjects">
                             项目总览
                         </FluentButton>
                     </div>
@@ -66,8 +67,7 @@
             </h2>
             <div class="grid md:grid-cols-3 gap-8">
                 <div class="text-center p-6">
-                    <FluentIcon Value="@(new Icons.Regular.Size32.DocumentPdf())"
-                               Color="Color.Info" class="mb-4" />
+                    <FluentIcon Value="@(new Icons.Regular.Size32.DocumentPdf())" Color="Color.Info" class="mb-4" />
                     <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                         PDF智能解析
                     </h4>
@@ -75,17 +75,17 @@
                         自动提取文档结构、关键内容和学术引用
                     </p>
                 </div>
-                <div class="text-center p-6">                    <FluentIcon Value="@(new Icons.Regular.Size32.Settings())"
-                               Color="Color.Success" class="mb-4" />
+                <div class="text-center p-6">
+                    <FluentIcon Value="@(new Icons.Regular.Size32.Settings())" Color="Color.Success" class="mb-4" />
                     <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                         AI内容分析
                     </h4>
                     <p class="text-gray-600 dark:text-gray-300">
                         深度理解文献内容，生成结构化演示大纲
                     </p>
-                </div>                <div class="text-center p-6">
-                    <FluentIcon Value="@(new Icons.Regular.Size32.Document())"
-                               Color="Color.Warning" class="mb-4" />
+                </div>
+                <div class="text-center p-6">
+                    <FluentIcon Value="@(new Icons.Regular.Size32.Document())" Color="Color.Warning" class="mb-4" />
                     <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                         自动生成PPT
                     </h4>
@@ -98,78 +98,25 @@
     </div>
 </div>
 
-<!-- Create Project Dialog -->
-<FluentDialog @bind-Open="showCreateDialog" Modal="true" TrapFocus="true">
-    <FluentDialogHeader>
-        <h3>创建新项目</h3>
-    </FluentDialogHeader>
-    <FluentDialogBody>
-        <FluentStack Orientation="Orientation.Vertical" Class="gap-4">
-            <FluentTextField @bind-Value="newProjectTitle"
-                           Label="项目标题"
-                           Required="true"
-                           Placeholder="请输入项目标题..." />
-
-            <FluentTextArea @bind-Value="newProjectDescription"
-                          Label="项目描述"
-                          Rows="3"
-                          Placeholder="简要描述您的综述内容..." />
-        </FluentStack>
-    </FluentDialogBody>
-    <FluentDialogFooter>
-        <FluentButton Appearance="Appearance.Neutral" @onclick="CloseCreateDialog">
-            取消
-        </FluentButton>
-        <FluentButton Appearance="Appearance.Accent"
-                     @onclick="CreateProject"
-                     Loading="@isCreatingProject"
-                     Disabled="@(string.IsNullOrWhiteSpace(newProjectTitle))">
-            创建项目
-        </FluentButton>
-    </FluentDialogFooter>
-</FluentDialog>
-
 @code {
-    private bool showCreateDialog = false;
-    private bool isCreatingProject = false;
-    private string newProjectTitle = string.Empty;
-    private string newProjectDescription = string.Empty;
-
-    private void ShowCreateProjectDialog()
+    private async Task ShowCreateProjectDialog()
     {
-        showCreateDialog = true;
-    }
+        var projectData = new CreateProjectData();
 
-    private void CloseCreateDialog()
-    {
-        showCreateDialog = false;
-        newProjectTitle = string.Empty;
-        newProjectDescription = string.Empty;
-    }
-
-    private async Task CreateProject()
-    {
-        if (string.IsNullOrWhiteSpace(newProjectTitle))
-            return;
-
-        isCreatingProject = true;
-        try
+        var dialog = await DialogService.ShowDialogAsync<CreateProjectDialog>(projectData, new DialogParameters()
         {
-            // TODO: 实现项目创建逻辑
-            var project = await ProjectService.CreateProjectAsync(newProjectTitle, newProjectDescription);
+            Height = "320px",
+            Width = "500px",
+            Title = "创建新项目",
+            PreventDismissOnOverlayClick = true,
+            PreventScroll = true,
+        });
 
-            // 创建成功后跳转到项目详情页
-            Navigation.NavigateTo($"/project/{project.Id}");
-        }
-        catch (Exception ex)
+        var result = await dialog.Result;
+        if (!result.Cancelled && result.Data != null)
         {
-            // TODO: 显示错误消息
-            await JSRuntime.InvokeVoidAsync("alert", $"创建项目失败: {ex.Message}");
-        }
-        finally
-        {
-            isCreatingProject = false;
-            CloseCreateDialog();
+            // 项目创建成功，导航到项目列表
+            Navigation.NavigateTo("/projects");
         }
     }
 

@@ -72,4 +72,10 @@ namespace SynBlazor.Models
         public string IconName { get; set; } = string.Empty;
         public bool IsDisabled { get; set; } = false;
     }
+
+    public class CreateProjectData
+    {
+        public string ProjectName { get; set; } = string.Empty;
+        public string ProjectDescription { get; set; } = string.Empty;
+    }
 }
