@@ -16,10 +16,11 @@ namespace SynBlazor.Services
         Task SetThemeAsync(ThemeMode theme);
         Task InitializeAsync();
     }
+
     public class ThemeService : IThemeService
     {
         private readonly IJSRuntime _jsRuntime;
-        private ThemeMode _currentTheme = ThemeMode.System; // 默认主题为系统主题
+        private ThemeMode _currentTheme = ThemeMode.Light;
 
         public ThemeMode CurrentTheme => _currentTheme;
 
@@ -42,7 +43,7 @@ namespace SynBlazor.Services
                 }
                 else
                 {
-                    _currentTheme = ThemeMode.Light; // 默认为亮色主题
+                    _currentTheme = ThemeMode.Light;
                 }
 
                 await ApplyThemeAsync(_currentTheme);
@@ -50,7 +51,7 @@ namespace SynBlazor.Services
             catch
             {
                 // 如果出错，使用默认主题
-                _currentTheme = ThemeMode.Light; // 默认为亮色主题
+                _currentTheme = ThemeMode.Light;
                 await ApplyThemeAsync(_currentTheme);
             }
         }
@@ -68,6 +69,7 @@ namespace SynBlazor.Services
             // 通知主题变更
             ThemeChanged?.Invoke(theme);
         }
+
         private async Task ApplyThemeAsync(ThemeMode theme)
         {
             try
@@ -77,20 +79,37 @@ namespace SynBlazor.Services
                     ThemeMode.Light => "light",
                     ThemeMode.Dark => "dark",
                     ThemeMode.System => await GetSystemThemeAsync(),
-                    _ => "light" // 默认值
+                    _ => "light"
                 };
 
-                // 设置html元素的class以应用Tailwind CSS主题
-                await _jsRuntime.InvokeVoidAsync("eval",
-                    $"document.documentElement.className = document.documentElement.className.replace(/\\b(light|dark)\\b/g, '').trim(); document.documentElement.classList.add('{themeClass}')");
-
-                // 同时设置body的class用于CSS变量
-                await _jsRuntime.InvokeVoidAsync("eval",
-                    $"document.body.className = document.body.className.replace(/\\b(light|dark)\\b/g, '').trim(); document.body.classList.add('{themeClass}')");
+                // 使用更安全的方式设置主题类
+                await _jsRuntime.InvokeVoidAsync("setThemeClass", themeClass);
             }
             catch
             {
-                // 静默处理JS错误
+                // 如果自定义函数不可用，回退到 eval 方式
+                var themeClass = theme switch
+                {
+                    ThemeMode.Light => "light",
+                    ThemeMode.Dark => "dark",
+                    ThemeMode.System => await GetSystemThemeAsync(),
+                    _ => "light"
+                };
+
+                try
+                {
+                    // 设置 html 元素的 class 以应用主题
+                    await _jsRuntime.InvokeVoidAsync("eval",
+                        $"document.documentElement.className = document.documentElement.className.replace(/\\b(light|dark)\\b/g, '').trim(); document.documentElement.classList.add('{themeClass}')");
+
+                    // 同时设置 body 的 class 用于 CSS 变量
+                    await _jsRuntime.InvokeVoidAsync("eval",
+                        $"document.body.className = document.body.className.replace(/\\b(light|dark)\\b/g, '').trim(); document.body.classList.add('{themeClass}')");
+                }
+                catch
+                {
+                    // 静默处理JS错误
+                }
             }
         }
 

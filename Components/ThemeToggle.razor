@@ -2,57 +2,85 @@
 @inject IThemeService ThemeService
 @implements IDisposable
 
-<FluentButton Appearance="Appearance.Stealth" IconEnd="@(new Icons.Regular.Size20.DarkTheme())" @onclick="ToggleThemePanel"
-    Title="主题设置">
+<FluentButton Appearance="Appearance.Stealth"
+              IconEnd="@(new Icons.Regular.Size20.DarkTheme())"
+              @onclick="ToggleThemePanel"
+              Title="主题设置"
+              Class="text-theme-secondary hover:text-theme-primary">
 </FluentButton>
 
-<!-- 使用简单的侧边栏而不是 FluentOffcanvas -->
+<!-- 主题设置面板 -->
 @if (IsThemePanelOpen)
 {
     <div class="theme-overlay" @onclick="CloseThemePanel">
-        <div class="theme-sidebar" @onclick:stopPropagation="true">
+        <div class="theme-sidebar bg-theme-surface border-theme-base shadow-theme-lg" @onclick:stopPropagation="true">
             <FluentStack Orientation="Orientation.Vertical" Class="theme-options">
                 <div class="theme-header">
-                    <h4>选择主题</h4>
-                    <FluentButton Appearance="Appearance.Stealth" IconEnd="@(new Icons.Regular.Size20.Dismiss())"
-                        @onclick="CloseThemePanel" Title="关闭">
+                    <h4 class="text-theme-primary font-semibold text-lg">选择主题</h4>
+                    <FluentButton Appearance="Appearance.Stealth"
+                                  IconEnd="@(new Icons.Regular.Size20.Dismiss())"
+                                  @onclick="CloseThemePanel"
+                                  Title="关闭"
+                                  Class="text-theme-secondary hover:text-theme-primary">
                     </FluentButton>
                 </div>
 
-                <FluentDivider />
+                <FluentDivider Class="border-theme-base" />
 
-                <FluentRadioGroup @bind-Value="@SelectedTheme" Orientation="Orientation.Vertical" Name="theme-selection">
+                <FluentRadioGroup @bind-Value="@SelectedTheme"
+                                  Orientation="Orientation.Vertical"
+                                  Name="theme-selection"
+                                  Class="space-y-3">
 
-                    <FluentRadio Value="@ThemeMode.Light" Class="theme-option-item">
-                        <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
-                            <FluentIcon Value="@(new Icons.Regular.Size20.WeatherSunny())" Color="Color.Warning" />
-                            <span>浅色主题</span>
+                    <FluentRadio Value="@ThemeMode.Light"
+                                 Class="theme-option-item bg-theme-surface border-theme-base hover:bg-theme-surface-hover hover:border-theme-hover rounded-lg p-3 transition-colors">
+                        <FluentStack Orientation="Orientation.Horizontal"
+                                     VerticalAlignment="VerticalAlignment.Center"
+                                     Class="gap-3">
+                            <FluentIcon Value="@(new Icons.Regular.Size20.WeatherSunny())"
+                                        Color="Color.Warning"
+                                        Class="text-amber-500" />
+                            <span class="text-theme-primary font-medium">浅色主题</span>
                         </FluentStack>
                     </FluentRadio>
 
-                    <FluentRadio Value="@ThemeMode.Dark" Class="theme-option-item">
-                        <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
-                            <FluentIcon Value="@(new Icons.Regular.Size20.WeatherMoon())" Color="Color.Info" />
-                            <span>深色主题</span>
+                    <FluentRadio Value="@ThemeMode.Dark"
+                                 Class="theme-option-item bg-theme-surface border-theme-base hover:bg-theme-surface-hover hover:border-theme-hover rounded-lg p-3 transition-colors">
+                        <FluentStack Orientation="Orientation.Horizontal"
+                                     VerticalAlignment="VerticalAlignment.Center"
+                                     Class="gap-3">
+                            <FluentIcon Value="@(new Icons.Regular.Size20.WeatherMoon())"
+                                        Color="Color.Info"
+                                        Class="text-blue-500" />
+                            <span class="text-theme-primary font-medium">深色主题</span>
                         </FluentStack>
                     </FluentRadio>
 
-                    <FluentRadio Value="@ThemeMode.System" Class="theme-option-item">
-                        <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
-                            <FluentIcon Value="@(new Icons.Regular.Size20.Desktop())" Color="Color.Neutral" />
-                            <span>跟随系统</span>
+                    <FluentRadio Value="@ThemeMode.System"
+                                 Class="theme-option-item bg-theme-surface border-theme-base hover:bg-theme-surface-hover hover:border-theme-hover rounded-lg p-3 transition-colors">
+                        <FluentStack Orientation="Orientation.Horizontal"
+                                     VerticalAlignment="VerticalAlignment.Center"
+                                     Class="gap-3">
+                            <FluentIcon Value="@(new Icons.Regular.Size20.Desktop())"
+                                        Color="Color.Neutral"
+                                        Class="text-theme-secondary" />
+                            <span class="text-theme-primary font-medium">跟随系统</span>
                         </FluentStack>
                     </FluentRadio>
 
                 </FluentRadioGroup>
 
-                <FluentDivider />
+                <FluentDivider Class="border-theme-base" />
 
-                <div class="theme-actions">
-                    <FluentButton Appearance="Appearance.Neutral" @onclick="CloseThemePanel">
+                <div class="theme-actions flex gap-2 justify-end mt-4">
+                    <FluentButton Appearance="Appearance.Neutral"
+                                  @onclick="CloseThemePanel"
+                                  Class="theme-btn-secondary border-theme-base text-theme-primary hover:bg-theme-surface-hover">
                         取消
                     </FluentButton>
-                    <FluentButton Appearance="Appearance.Accent" @onclick="ApplyTheme">
+                    <FluentButton Appearance="Appearance.Accent"
+                                  @onclick="ApplyTheme"
+                                  Class="theme-btn-primary bg-theme-accent text-theme-accent hover:bg-theme-accent-hover">
                         应用
                     </FluentButton>
                 </div>
@@ -62,18 +90,13 @@
 }
 
 @code {
-    private ThemeMode SelectedTheme = ThemeMode.Light; // 默认为亮色主题
+    private ThemeMode SelectedTheme = ThemeMode.Light;
     private bool IsThemePanelOpen = false;
 
     protected override async Task OnInitializedAsync()
     {
         SelectedTheme = ThemeService.CurrentTheme;
         ThemeService.ThemeChanged += OnThemeChanged;
-        // 确保默认应用亮色主题
-        if (ThemeService.CurrentTheme == ThemeMode.System)
-        {
-            await ThemeService.SetThemeAsync(ThemeMode.Light);
-        }
         await base.OnInitializedAsync();
     }
 
