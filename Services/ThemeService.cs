@@ -1,108 +1,108 @@
 using Microsoft.JSInterop;
 
-namespace SynBlazor.Services
+namespace SynBlazor.Services;
+
+public enum ThemeMode
 {
-    public enum ThemeMode
+    Light,
+    Dark,
+    Tiger,
+    System
+}
+
+public interface IThemeService
+{
+    ThemeMode CurrentTheme { get; }
+    event Action<ThemeMode>? ThemeChanged;
+    Task SetThemeAsync(ThemeMode theme);
+    Task InitializeAsync();
+}
+
+public class ThemeService : IThemeService
+{
+    private readonly IJSRuntime _jsRuntime;
+    private ThemeMode _currentTheme = ThemeMode.Light;
+
+    public ThemeMode CurrentTheme => _currentTheme;
+
+    public event Action<ThemeMode>? ThemeChanged;
+
+    public ThemeService(IJSRuntime jsRuntime)
     {
-        Light,
-        Dark,
-        Tiger,
-        System
+        _jsRuntime = jsRuntime;
     }
 
-    public interface IThemeService
+    public async Task InitializeAsync()
     {
-        ThemeMode CurrentTheme { get; }
-        event Action<ThemeMode>? ThemeChanged;
-        Task SetThemeAsync(ThemeMode theme);
-        Task InitializeAsync();
-    }
-
-    public class ThemeService : IThemeService
-    {
-        private readonly IJSRuntime _jsRuntime;
-        private ThemeMode _currentTheme = ThemeMode.Light;
-
-        public ThemeMode CurrentTheme => _currentTheme;
-
-        public event Action<ThemeMode>? ThemeChanged;
-
-        public ThemeService(IJSRuntime jsRuntime)
+        try
         {
-            _jsRuntime = jsRuntime;
-        }
-
-        public async Task InitializeAsync()
-        {
-            try
+            // 从localStorage读取保存的主题设置
+            var savedTheme = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "theme");
+            if (!string.IsNullOrEmpty(savedTheme) && Enum.TryParse<ThemeMode>(savedTheme, out var theme))
             {
-                // 从localStorage读取保存的主题设置
-                var savedTheme = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "theme");
-                if (!string.IsNullOrEmpty(savedTheme) && Enum.TryParse<ThemeMode>(savedTheme, out var theme))
-                {
-                    _currentTheme = theme;
-                }
-                else
-                {
-                    _currentTheme = ThemeMode.Light;
-                }
-
-                await ApplyThemeAsync(_currentTheme);
+                _currentTheme = theme;
             }
-            catch
+            else
             {
-                // 如果出错，使用默认主题
                 _currentTheme = ThemeMode.Light;
-                await ApplyThemeAsync(_currentTheme);
             }
+
+            await ApplyThemeAsync(_currentTheme);
         }
-
-        public async Task SetThemeAsync(ThemeMode theme)
+        catch
         {
-            _currentTheme = theme;
-
-            // 保存到localStorage
-            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "theme", theme.ToString());
-
-            // 应用主题
-            await ApplyThemeAsync(theme);
-
-            // 通知主题变更
-            ThemeChanged?.Invoke(theme);
+            // 如果出错，使用默认主题
+            _currentTheme = ThemeMode.Light;
+            await ApplyThemeAsync(_currentTheme);
         }
-        private async Task ApplyThemeAsync(ThemeMode theme)
+    }
+
+    public async Task SetThemeAsync(ThemeMode theme)
+    {
+        _currentTheme = theme;
+
+        // 保存到localStorage
+        await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "theme", theme.ToString());
+
+        // 应用主题
+        await ApplyThemeAsync(theme);
+
+        // 通知主题变更
+        ThemeChanged?.Invoke(theme);
+    }
+    private async Task ApplyThemeAsync(ThemeMode theme)
+    {
+        try
         {
+            var themeClass = theme switch
+            {
+                ThemeMode.Light => "light",
+                ThemeMode.Dark => "dark",
+                ThemeMode.Tiger => "tiger",
+                ThemeMode.System => await GetSystemThemeAsync(),
+                _ => "light"
+            };
+
+            // 更安全的方式设置主题类
+            await _jsRuntime.InvokeVoidAsync("applyTheme", themeClass);
+        }
+        catch
+        {
+            // 如果自定义函数不可用，回退到直接DOM操作
+            var themeClass = theme switch
+            {
+                ThemeMode.Light => "light",
+                ThemeMode.Dark => "dark",
+                ThemeMode.Tiger => "tiger",
+                ThemeMode.System => await GetSystemThemeAsync(),
+                _ => "light"
+            };
+
             try
             {
-                var themeClass = theme switch
-                {
-                    ThemeMode.Light => "light",
-                    ThemeMode.Dark => "dark",
-                    ThemeMode.Tiger => "tiger",
-                    ThemeMode.System => await GetSystemThemeAsync(),
-                    _ => "light"
-                };
-
-                // 更安全的方式设置主题类
-                await _jsRuntime.InvokeVoidAsync("applyTheme", themeClass);
-            }
-            catch
-            {
-                // 如果自定义函数不可用，回退到直接DOM操作
-                var themeClass = theme switch
-                {
-                    ThemeMode.Light => "light",
-                    ThemeMode.Dark => "dark",
-                    ThemeMode.Tiger => "tiger",
-                    ThemeMode.System => await GetSystemThemeAsync(),
-                    _ => "light"
-                };
-
-                try
-                {
-                    // 移除所有主题类并应用新主题
-                    await _jsRuntime.InvokeVoidAsync("eval",
-                        $@"
+                // 移除所有主题类并应用新主题
+                await _jsRuntime.InvokeVoidAsync("eval",
+                    $@"
                         const html = document.documentElement;
                         const body = document.body;
 
@@ -116,26 +116,25 @@ namespace SynBlazor.Services
                             body.classList.add('{themeClass}');
                         }}
                         ");
-                }
-                catch
-                {
-                    // 静默处理JS错误
-                }
-            }
-        }
-
-        private async Task<string> GetSystemThemeAsync()
-        {
-            try
-            {
-                var prefersDark = await _jsRuntime.InvokeAsync<bool>("eval",
-                    "window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches");
-                return prefersDark ? "dark" : "light";
             }
             catch
             {
-                return "light";
+                // 静默处理JS错误
             }
+        }
+    }
+
+    private async Task<string> GetSystemThemeAsync()
+    {
+        try
+        {
+            var prefersDark = await _jsRuntime.InvokeAsync<bool>("eval",
+                "window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches");
+            return prefersDark ? "dark" : "light";
+        }
+        catch
+        {
+            return "light";
         }
     }
 }

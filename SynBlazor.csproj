@@ -4,6 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <CompressionEnabled>false</CompressionEnabled>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,14 +12,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.11.9" />
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.11.9" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\" />
-    <Folder Include="Properties\Models\" />
-    <Folder Include="Services\" />
-    <Folder Include="wwwroot\data\" />
-    <Folder Remove="src-tauri\"/>
   </ItemGroup>
 
 </Project>
