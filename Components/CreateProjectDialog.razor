@@ -11,29 +11,29 @@
 <FluentDialogBody>
     <FluentStack Orientation="Orientation.Vertical" Class="gap-4">
         <FluentTextField @bind-Value="ProjectData.ProjectName"
-                       Label="项目标题"
-                       Required="true"
-                       Placeholder="请输入项目标题..."
-                       Style="width: 100%;" />
+                         Label="项目标题"
+                         Required="true"
+                         Placeholder="请输入项目标题..."
+                         Style="width: 100%;" />
 
         <FluentTextArea @bind-Value="ProjectData.ProjectDescription"
-                      Label="项目描述"
-                      Rows="3"
-                      Placeholder="简要描述您的综述内容..."
-                      Style="width: 100%;" />
+                        Label="项目描述"
+                        Rows="3"
+                        Placeholder="简要描述您的综述内容..."
+                        Style="width: 100%;" />
     </FluentStack>
 </FluentDialogBody>
 
 <FluentDialogFooter>
     <FluentButton Appearance="Appearance.Neutral"
-                 @onclick="Cancel"
-                 Disabled="@IsCreating">
+                  @onclick="Cancel"
+                  Disabled="@IsCreating">
         取消
     </FluentButton>
     <FluentButton Appearance="Appearance.Accent"
-                 @onclick="CreateProject"
-                 Loading="@IsCreating"
-                 Disabled="@(string.IsNullOrWhiteSpace(ProjectData.ProjectName) || IsCreating)">
+                  @onclick="CreateProject"
+                  Loading="@IsCreating"
+                  Disabled="@(string.IsNullOrWhiteSpace(ProjectData.ProjectName) || IsCreating)">
         @if (IsCreating)
         {
             <span>创建中...</span>

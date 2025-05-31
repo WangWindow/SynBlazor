@@ -8,14 +8,14 @@
 
 <PageTitle>SynBlazor - PDF综述转PPT</PageTitle>
 
-<div class="min-h-screen bg-theme-base">
-    <div class="container mx-auto px-4 py-12">
+<div class="h-full bg-theme-base overflow-y-auto">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
         <!-- Header Section -->
-        <div class="text-center mb-16">
-            <h1 class="text-5xl font-bold text-theme-primary mb-6">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-theme-primary mb-4">
                 SynBlazor
             </h1>
-            <p class="text-xl text-theme-secondary max-w-3xl mx-auto leading-relaxed">
+            <p class="text-lg md:text-xl text-theme-secondary max-w-3xl mx-auto leading-relaxed">
                 智能PDF综述转换工具，通过AI分析学术文献内容，自动生成专业的PowerPoint演示文稿
             </p>
         </div>
@@ -34,7 +34,7 @@
                         <p class="text-theme-secondary mb-6">
                             上传PDF综述文件，开始智能转换过程
                         </p>
-                        <FluentButton Appearance="Appearance.Accent" class="px-8 py-3 text-lg font-medium"
+                        <FluentButton Appearance="Appearance.Accent" class="text-lg font-medium"
                             @onclick="ShowCreateProjectDialog">
                             开始创建
                         </FluentButton>
@@ -51,7 +51,7 @@
                         <p class="text-theme-secondary mb-6">
                             管理已有项目，查看处理进度和下载结果
                         </p>
-                        <FluentButton Appearance="Appearance.Outline" class="px-8 py-3 text-lg font-medium"
+                        <FluentButton Appearance="Appearance.Accent" class="text-lg font-medium"
                             @onclick="NavigateToProjects">
                             项目总览
                         </FluentButton>

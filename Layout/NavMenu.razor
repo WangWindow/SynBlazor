@@ -1,6 +1,6 @@
 <div class="navmenu">
     <nav class="sitenav" aria-labelledby="main-menu">
-        <FluentNavMenu Id="main-menu" Width="250" Collapsible="true" Title="Navigation menu" @bind-Expanded="expanded"
+        <FluentNavMenu Id="main-menu" Width="250" Collapsible="true" Title="Navigation menu" @bind-Expanded="isExpanded"
             CustomToggle="true">
             <FluentNavLink Href="/" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Home())"
                 IconColor="Color.Accent">首页</FluentNavLink>
@@ -11,5 +11,5 @@
 </div>
 
 @code {
-    private bool expanded = true;
+    private bool isExpanded = false;
 }

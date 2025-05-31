@@ -5,13 +5,13 @@
 
 <PageTitle>项目总览 - SynBlazor</PageTitle>
 
-<div class="min-h-screen bg-theme-base">
-    <div class="container mx-auto px-4 py-8">
+<div class="h-full bg-theme-base overflow-y-auto">
+    <div class="container mx-auto px-4 py-6 max-w-7xl">
         <!-- Header -->
-        <div class="flex justify-between items-center mb-8">
+        <div class="flex justify-between items-center mb-6">
             <div>
-                <h1 class="text-3xl font-bold text-theme-primary">项目总览</h1>
-                <p class="text-theme-secondary mt-2">管理您的PDF转PPT项目</p>
+                <h1 class="text-2xl md:text-3xl font-bold text-theme-primary">项目总览</h1>
+                <p class="text-theme-secondary mt-1">管理您的PDF转PPT项目</p>
             </div>
             <FluentButton Appearance="Appearance.Accent" @onclick="NavigateToHome"
                 IconStart="@(new Icons.Regular.Size20.Add())">
@@ -36,10 +36,12 @@
                     <FluentCard class="hover:shadow-lg transition-all duration-300 cursor-pointer"
                         @onclick="() => NavigateToProject(project.Id)">
                         <div class="p-6">
-                            <!-- Status Badge -->                            <div class="flex justify-between items-start mb-4">
+                            <!-- Status Badge -->
+                            <div class="flex justify-between items-start mb-4">
                                 <FluentBadge Appearance="@GetStatusAppearance(project.Status)" class="text-xs">
                                     @GetStatusText(project.Status)
-                                </FluentBadge>                                <FluentButton Size="ButtonSize.Small" Appearance="Appearance.Stealth"
+                                </FluentBadge>
+                                <FluentButton Size="ButtonSize.Small" Appearance="Appearance.Stealth"
                                     IconStart="@(new Icons.Regular.Size16.MoreHorizontal())"
                                     @onclick="@(() => NavigateToProject(project.Id))" />
                             </div>
@@ -79,14 +81,16 @@
 
                             <!-- Action Buttons -->
                             <div class="mt-4 flex gap-2">
-                                @if (project.Status == ProjectStatus.Completed && !string.IsNullOrEmpty(project.PptxFileName))                                {
+                                @if (project.Status == ProjectStatus.Completed && !string.IsNullOrEmpty(project.PptxFileName))
+                                {
                                     <FluentButton Size="ButtonSize.Small" Appearance="Appearance.Accent"
                                         @onclick="@(() => DownloadPptx(project.Id))"
                                         IconStart="@(new Icons.Regular.Size16.ArrowDownload())">
                                         下载PPT
                                     </FluentButton>
                                 }
-                                else if (project.Status == ProjectStatus.PdfUploaded)                                {
+                                else if (project.Status == ProjectStatus.PdfUploaded)
+                                {
                                     <FluentButton Size="ButtonSize.Small" Appearance="Appearance.Accent"
                                         @onclick="@(() => StartProcessing(project.Id))"
                                         IconStart="@(new Icons.Regular.Size16.Play())">
@@ -103,8 +107,7 @@
         {
             <!-- Empty State -->
             <div class="text-center py-16">
-                <FluentIcon Value="@(new Icons.Regular.Size48.Folder())" Color="Color.Neutral"
-                    class="mb-4 opacity-50" />
+                <FluentIcon Value="@(new Icons.Regular.Size48.Folder())" Color="Color.Neutral" class="mb-4 opacity-50" />
                 <h3 class="text-xl font-semibold text-theme-primary mb-2">
                     还没有项目
                 </h3>
@@ -225,7 +228,8 @@
     {
         return new List<MenuButtonItem>
 {
-new() { Text = "查看详情", OnClick = () => NavigateToProject(project.Id) },            new() { Text = "删除项目", OnClick = async () => await DeleteProject(project.Id) }
+new() { Text = "查看详情", OnClick = () => NavigateToProject(project.Id) }, new() { Text = "删除项目", OnClick = async () =>
+await DeleteProject(project.Id) }
 };
     }
 

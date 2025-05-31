@@ -3,7 +3,7 @@
 @implements IDisposable
 
 <FluentButton Appearance="Appearance.Stealth" IconEnd="@(new Icons.Regular.Size20.DarkTheme())"
-    @onclick="ToggleThemePanel" Title="主题设置" Class="text-theme-secondary hover:text-theme-primary">
+              @onclick="ToggleThemePanel" Title="主题设置" Class="text-theme-secondary hover:text-theme-primary">
 </FluentButton>
 
 <!-- 主题设置面板 -->
@@ -15,50 +15,50 @@
                 <div class="theme-header">
                     <h4 class="text-theme-primary font-semibold text-lg">选择主题</h4>
                     <FluentButton Appearance="Appearance.Stealth" IconEnd="@(new Icons.Regular.Size20.Dismiss())"
-                        @onclick="CloseThemePanel" Title="关闭" Class="text-theme-secondary hover:text-theme-primary">
+                                  @onclick="CloseThemePanel" Title="关闭" Class="text-theme-secondary hover:text-theme-primary">
                     </FluentButton>
                 </div>
 
                 <FluentDivider Class="border-theme-base" />
 
                 <FluentRadioGroup @bind-Value="@SelectedTheme" Orientation="Orientation.Vertical" Name="theme-selection"
-                    Class="space-y-3">
+                                  Class="space-y-3">
 
                     <FluentRadio Value="@ThemeMode.Light"
-                        Class="theme-option-item bg-theme-surface border-theme-base hover:bg-theme-surface-hover hover:border-theme-hover rounded-lg p-3 transition-colors">
+                                 Class="theme-option-item bg-theme-surface border-theme-base hover:bg-theme-surface-hover hover:border-theme-hover rounded-lg p-3 transition-colors">
                         <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center"
-                            Class="gap-3">
+                                     Class="gap-3">
                             <FluentIcon Value="@(new Icons.Regular.Size20.WeatherSunny())" Color="Color.Warning"
-                                Class="text-amber-500" />
+                                        Class="text-amber-500" />
                             <span class="text-theme-primary font-medium">浅色主题</span>
                         </FluentStack>
                     </FluentRadio>
                     <FluentRadio Value="@ThemeMode.Dark"
-                        Class="theme-option-item bg-theme-surface border-theme-base hover:bg-theme-surface-hover hover:border-theme-hover rounded-lg p-3 transition-colors">
+                                 Class="theme-option-item bg-theme-surface border-theme-base hover:bg-theme-surface-hover hover:border-theme-hover rounded-lg p-3 transition-colors">
                         <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center"
-                            Class="gap-3">
+                                     Class="gap-3">
                             <FluentIcon Value="@(new Icons.Regular.Size20.WeatherMoon())" Color="Color.Info"
-                                Class="text-theme-accent" />
+                                        Class="text-theme-accent" />
                             <span class="text-theme-primary font-medium">深色主题</span>
                         </FluentStack>
                     </FluentRadio>
 
                     <FluentRadio Value="@ThemeMode.Tiger"
-                        Class="theme-option-item bg-theme-surface border-theme-base hover:bg-theme-surface-hover hover:border-theme-hover rounded-lg p-3 transition-colors">
+                                 Class="theme-option-item bg-theme-surface border-theme-base hover:bg-theme-surface-hover hover:border-theme-hover rounded-lg p-3 transition-colors">
                         <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center"
-                            Class="gap-3">
+                                     Class="gap-3">
                             <FluentIcon Value="@(new Icons.Regular.Size20.Heart())" Color="Color.Warning"
-                                Class="text-orange-500" />
-                            <span class="text-theme-primary font-medium">虎年主题</span>
+                                        Class="text-orange-500" />
+                            <span class="text-theme-primary font-medium">护眼主题</span>
                         </FluentStack>
                     </FluentRadio>
 
                     <FluentRadio Value="@ThemeMode.System"
-                        Class="theme-option-item bg-theme-surface border-theme-base hover:bg-theme-surface-hover hover:border-theme-hover rounded-lg p-3 transition-colors">
+                                 Class="theme-option-item bg-theme-surface border-theme-base hover:bg-theme-surface-hover hover:border-theme-hover rounded-lg p-3 transition-colors">
                         <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center"
-                            Class="gap-3">
+                                     Class="gap-3">
                             <FluentIcon Value="@(new Icons.Regular.Size20.Desktop())" Color="Color.Neutral"
-                                Class="text-theme-secondary" />
+                                        Class="text-theme-secondary" />
                             <span class="text-theme-primary font-medium">跟随系统</span>
                         </FluentStack>
                     </FluentRadio>
@@ -69,11 +69,11 @@
 
                 <div class="theme-actions flex gap-2 justify-end mt-4">
                     <FluentButton Appearance="Appearance.Neutral" @onclick="CloseThemePanel"
-                        Class="theme-btn-secondary border-theme-base text-theme-primary hover:bg-theme-surface-hover">
+                                  Class="theme-btn-secondary border-theme-base text-theme-primary hover:bg-theme-surface-hover">
                         取消
                     </FluentButton>
                     <FluentButton Appearance="Appearance.Accent" @onclick="ApplyTheme"
-                        Class="bg-theme-accent text-theme-invert hover:bg-theme-accent-hover transition-colors">
+                                  Class="bg-theme-accent text-theme-invert hover:bg-theme-accent-hover transition-colors">
                         应用
                     </FluentButton>
                 </div>

@@ -258,9 +258,17 @@ body {
     font-size: var(--type-ramp-base-font-size);
     line-height: var(--type-ramp-base-line-height);
     margin: 0;
+    padding: 0;
     background-color: rgb(var(--color-bg-base));
     color: rgb(var(--color-text-main));
     transition: background-color 0.3s ease, color 0.3s ease;
+    height: 100vh;
+    overflow: hidden;
+}
+
+html {
+    height: 100%;
+    overflow: hidden;
 }
 
 .navmenu-icon {
@@ -268,21 +276,20 @@ body {
 }
 
 .main {
-    min-height: calc(100dvh - 86px);
     color: var(--neutral-foreground-rest);
     align-items: stretch !important;
 }
 
 .body-content {
     align-self: stretch;
-    height: calc(100dvh - 86px) !important;
     display: flex;
 }
 
 .content {
-    padding: 0.5rem 1.5rem;
+    padding: 1rem 1.5rem;
     align-self: stretch !important;
     width: 100%;
+    overflow-y: auto;
 }
 
 footer {
